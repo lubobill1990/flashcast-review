@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
+
+model User {
+  id                      Int                      @id @default(autoincrement())
+  email                   String                   @unique
+  avatar                  String?
+  name                    String
+  createdAt               DateTime                 @default(now())
+  samples                 Sample[]
+  experiments             Experiment[]
+  clipReviews             ClipReview[]
+  experimentSampleReviews ExperimentSampleReview[]
+}
+
+model Experiment {
+  id                   Int          @id @default(autoincrement())
+  name                 String
+  description          String?
+  createdAt            DateTime     @default(now())
+  parameters           Json         @default("{}")
+  runStatus            String
+  samples              Json         @default("[]")
+  userId               Int
+  user                 User         @relation(fields: [userId], references: [id])
+  isReadyForReview     Boolean      @default(false)
+  isPublic             Boolean      @default(false)
+  forkFromExperimentId Int?
+  forkFromExperiment   Experiment?  @relation("Experiment_ExperimentSample_fromExperiment", fields: [forkFromExperimentId], references: [id])
+  forkToExperiments    Experiment[] @relation("Experiment_ExperimentSample_fromExperiment")
+
+  experimentSample ExperimentSample[]
+}
+
+model Sample {
+  id               Int                @id @default(autoincrement())
+  data             Json
+  createdAt        DateTime           @default(now())
+  userId           Int
+  user             User               @relation(fields: [userId], references: [id])
+  isPublic         Boolean            @default(false)
+  experimentSample ExperimentSample[]
+}
+
+model ExperimentSample {
+  id           Int                      @id @default(autoincrement())
+  experimentId Int
+  experiment   Experiment               @relation(fields: [experimentId], references: [id])
+  sampleId     Int
+  sample       Sample                   @relation(fields: [sampleId], references: [id])
+  data         Json                     @default("{}")
+  createdAt    DateTime                 @default(now())
+  clips        Clip[]
+  reviews      ExperimentSampleReview[]
+}
+
+model Clip {
+  id                 Int              @id @default(autoincrement())
+  experimentSampleId Int
+  experimentSample   ExperimentSample @relation(fields: [experimentSampleId], references: [id])
+  data               Json
+  createdAt          DateTime         @default(now())
+  reviews            ClipReview[]
+}
+
+model ClipReview {
+  id        Int      @id @default(autoincrement())
+  clipId    Int
+  clip      Clip     @relation(fields: [clipId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  data      Json     @default("{}")
+  score     Int
+  comment   String?
+}
+
+model ExperimentSampleReview {
+  id                 Int              @id @default(autoincrement())
+  experimentSampleId Int
+  experimentSample   ExperimentSample @relation(fields: [experimentSampleId], references: [id])
+  userId             Int
+  user               User             @relation(fields: [userId], references: [id])
+  createdAt          DateTime         @default(now())
+  data               Json             @default("{}")
+  score              Int
+  comment            String?
+}
