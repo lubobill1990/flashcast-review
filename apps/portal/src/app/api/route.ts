@@ -6,7 +6,8 @@ import { NextApiRequest } from 'next';
 const prisma = new PrismaClient();
 
 export async function GET(req: NextApiRequest) {
-  const session = await getServerSession(req);
+  console.log(process.env);
+  const session = await getServerSession();
   const experiments = await prisma.experiment.deleteMany();
   return NextResponse.json({ session, experiments });
 }

@@ -18,6 +18,3 @@ networks:
     driver: bridge
 volumes:
   pgdata:
-  mysqldata:
-  redisdata:
-  esdata:
