@@ -78,7 +78,7 @@ The details include:
 4. the submitter information
 5. the status of the experiment
 6. the samples selected to be processed in the experiment
-7. the experiment samples result generated in the experiment
+7. the experiment samples output generated in the experiment
 
 ## Use case 11: Update the experiment `P4`
 
@@ -94,7 +94,7 @@ User should be able to delete the experiment they have submitted.
 
 When user clicks on the delete button, the experiment data should be deleted from the server.
 
-When deleting the experiment, the experiment samples result, video clips, clip evaluations generated in the experiment should also be deleted from the server.
+When deleting the experiment, the experiment samples output, video clips, clip evaluations generated in the experiment should also be deleted from the server.
 
 ## Use case 13: Trigger the experiment processing `P2`
 
@@ -108,17 +108,17 @@ When user triggers the experiment processing, the backend sends a request to the
 
 1. access the video file, the transcription file, the AI notes text of the samples selected to be processed in the experiment
 2. update the experiment status
-3. update the experiment samples result, adding the clips data and the clips video generated from the sample
+3. update the experiment samples output, adding the clips data and the clips video generated from the sample
 
-## Use case 14: View the experiment samples result list `P0`
+## Use case 14: View the experiment samples output list `P0`
 
-User should be able to view the experiment samples result list of public experiments or the experiment submitted by the user.
+User should be able to view the experiment samples output list of public experiments or the experiment submitted by the user.
 
-The experiment samples result list contains the experiment name, process start time, process end time, evaluation count, generated clips count.
+The experiment samples output list contains the experiment name, process start time, process end time, evaluation count, generated clips count.
 
-## Use case 15: Evaluate the experiment samples result details `P0`
+## Use case 15: Evaluate the experiment samples output details `P0`
 
-User should be able to view the details of an experiment samples result.
+User should be able to view the details of an experiment samples output.
 
 The details include:
 
