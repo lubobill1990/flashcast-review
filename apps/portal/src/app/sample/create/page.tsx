@@ -40,18 +40,18 @@ export default function Page() {
       <form action={dispatch}>
         <Text as='label'>
           Upload the video recording
-          <input type='file' />
+          <input type='file' name="recording" onChange={e => sample.setVideoFile(e.target.value)} />
         </Text>
         <Text as='label'>
           Upload the transcription
-          <textarea onChange={(e) => sample.setTranscriptionFile} />
+          <textarea name="transcription" onChange={(e) => sample.setTranscriptionFile} />
         </Text>
         <Text as='label'>
           AI Note
-          <textarea onChange={(e) => sample.setAiNote} />
+          <textarea name="notes" onChange={(e) => sample.setAiNote} />
         </Text>
 
-        <Button onClick={() => console.log(sample)}>Create</Button>
+        <Button>Create</Button>
       </form>
     </div>
   );

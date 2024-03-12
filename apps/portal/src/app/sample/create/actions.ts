@@ -1,17 +1,15 @@
 'use server';
 
-export async function submit(_currentState: unknown, formData: FormData) {
-    try {
-      console.log('credentials', _currentState, formData)
-    } catch (error) {
-      if (error) {
-        switch (error.type) {
-          case 'CredentialsSignin':
-            return 'Invalid credentials.'
-          default:
-            return 'Something went wrong.'
-        }
-      }
-      throw error
-    }
-  }
+import factory from "@/factory";
+
+export async function submit(_currentState: unknown, formData: FormData) { 
+
+  const data = {
+    recording: formData.get("recording") as File,
+    transcription: formData.get("transcription") as File,
+    notes: formData.get("notes") as string,
+  };
+
+  console.log(data);
+  return factory.sampleService.createSample(data);
+}
