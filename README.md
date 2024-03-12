@@ -45,7 +45,7 @@ pnpm docker:up
 
 ### Setup environment variables
 
-Create a `.env.local` file in the root of the project and add the following environment variables:
+Create a `.env.local` file under `/portal` and add the following environment variables:
 
 ```bash
 AZURE_AD_TENANT_ID="To get it from Bo"
@@ -61,7 +61,7 @@ Run the following command to create the database, run the migrations, and genera
 
 ```bash
 pnpm db:deploy
-pnpm db:genearte
+pnpm db:generate
 ```
 
 ### Start the development server
