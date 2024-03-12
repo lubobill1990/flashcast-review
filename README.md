@@ -144,3 +144,31 @@ const [resp, dispatch] = useFormState(submit, undefined);
 const status = useFormStatus();
 // status.status is the status of the form, you can render a spinner or error message based on it
 ```
+
+### Change Prisma schema
+
+After changing the Prisma schema, you need to run the following command to generate the migration without applying to database:
+
+```bash
+pnpm db:migrate:create
+```
+
+The generated migration file is not optimal, you need to improve it:
+
+1. Data loss is unacceptable. When you change the field or model name in the schema, the auto generated migration file will drop the old field or model and create a new one, and will cause data loss. You need to change it to `alter` instead of `drop` and `create`.
+   1. To alter field: `ALTER TABLE "Experiment" RENAME COLUMN "runStatus" TO "processStatus";`
+   2. To alter table name: `ALTER TABLE "ClipReview" RENAME TO "ClipEvaluation";`
+
+After improving the migration file, you need to run `pnpm db:migrate:create` again to ensure correctness and check if there is any other changes.
+
+After several iterations, you can run the following command to apply the migration to the database:
+
+```bash
+pnpm db:migrate:up
+```
+
+After applying the migration, you need to run the following command to generate the Prisma typings:
+
+```bash
+pnpm db:generate
+```

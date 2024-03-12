@@ -15,7 +15,7 @@
     "db:deploy": "cd apps/portal && npx dotenv -e .env.local -e .env.development -e .env -- npx prisma migrate deploy",
     "db:generate": "cd apps/portal && npx dotenv -e .env.local -e .env.development -e .env -- npx prisma generate",
     "db:migrate:create": "cd apps/portal && npx dotenv -e .env.local -e .env.development -e .env -- npx prisma migrate dev --name update --create-only",
-    "db:migrate:deploy": "cd apps/portal && npx dotenv -e .env.local -e .env.development -e .env -- npx prisma migrate deploy",
+    "db:migrate:up": "cd apps/portal && npx dotenv -e .env.local -e .env.development -e .env -- npx prisma migrate deploy",
     "db:migrate": "cd apps/portal && npx dotenv -e .env.local -e .env.development -e .env -- npx prisma migrate dev --name update",
     "db:update": "pnpm db:migrate && pnpm db:generate"
   },
