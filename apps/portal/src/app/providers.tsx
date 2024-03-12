@@ -1,5 +1,6 @@
 'use client';
 import { SessionProvider } from 'next-auth/react';
+import { ThemeProvider } from 'next-themes';
 
 import { FunctionComponent, PropsWithChildren } from 'react';
 
@@ -8,7 +9,9 @@ export const Providers: FunctionComponent<PropsWithChildren> = ({
 }) => {
   return (
     <>
-      <SessionProvider>{children}</SessionProvider>
+      <ThemeProvider attribute='class'>
+        <SessionProvider>{children}</SessionProvider>
+      </ThemeProvider>
     </>
   );
 };
