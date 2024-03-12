@@ -1,23 +1,29 @@
 'use client';
 
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import { signIn, signOut } from 'next-auth/react';
 
-export default function LoginButton() {
+export function LoginButton() {
+  return (
+    <button onClick={() => signIn('microsoft')}>Sign in with Microsoft</button>
+  );
+}
+
+export function LogoutButton() {
+  return <button onClick={() => signOut()}>Sign out</button>;
+}
+
+export function AuthButton() {
   const { data: session, status } = useSession();
 
-  console.log('session', session, status);
   return (
     <div>
-      {!session && (
-        <button onClick={() => signIn('microsoft')}>
-          Sign in with Microsoft
-        </button>
-      )}
+      {!session && <LoginButton />}
       {session && (
-        <>
-          <p>Signed in as {session.user?.email}</p>
-          <button onClick={() => signOut()}>Sign out</button>
-        </>
+        <div className='flex gap-2'>
+          <p>Signed in as {session.user?.name}</p>
+          <LogoutButton />
+        </div>
       )}
     </div>
   );

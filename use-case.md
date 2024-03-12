@@ -8,7 +8,7 @@ When user clicks on the login button, they should be redirected to the Microsoft
 
 After successful login, user should be redirected back to the application and be able to see their profile information.
 
-## Use case 2: Block any feature and page before login `P0`
+## Use case 2: Block any feature and page before login `P0` `Bo`
 
 User should only see a blank page with a login button if they are not logged in.
 
@@ -16,7 +16,12 @@ User should only see a blank page with a login button if they are not logged in.
 
 User should be able to submit a sample to the server.
 
-A sample contains the video file, the transcription file, the AI notes text, a is public flag.
+A sample contains:
+
+1. the video file
+2. the transcription file
+3. the AI notes text
+4. a is public flag.
 
 If a sample is public, it can be viewed by anyone. If it is private, it can only be viewed by the administrator and the user who submitted it.
 
@@ -57,7 +62,7 @@ User should be able to submit an experiment to the server.
 The submit form allows to edit:
 
 1. the experiment name
-2. the experiment description
+2. the experiment description, optional
 3. the is public flag, the default is true
 4. the samples selected to be processed in the experiment
 
@@ -131,3 +136,5 @@ If the user has already evaluated the video clips, the evaluation forms should b
 The evaluation is submitted instantly when user input the score and comment.
 
 There should be no submit button for the evaluation form.
+
+Go to the next evaluation.

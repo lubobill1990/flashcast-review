@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import LoginButton from './login';
+import { AuthButton } from './login';
 
 export const NavBar = () => {
   return (
@@ -26,7 +26,7 @@ export const NavBar = () => {
       </ul>
       <ul>
         <li>
-          <LoginButton />
+          <AuthButton />
         </li>
       </ul>
     </nav>
