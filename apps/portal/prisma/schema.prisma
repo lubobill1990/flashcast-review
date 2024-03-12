@@ -19,15 +19,15 @@ datasource db {
 // }
 
 model User {
-  id                      Int                      @id @default(autoincrement())
-  email                   String                   @unique
-  avatar                  String?
-  name                    String
-  createdAt               DateTime                 @default(now())
-  samples                 Sample[]
-  experiments             Experiment[]
-  clipReviews             ClipReview[]
-  experimentSampleReviews ExperimentSampleReview[]
+  id                          Int                          @id @default(autoincrement())
+  email                       String                       @unique
+  avatar                      String?
+  name                        String
+  createdAt                   DateTime                     @default(now())
+  samples                     Sample[]
+  experiments                 Experiment[]
+  clipEvaluations             ClipEvaluation[]
+  experimentSampleEvaluations ExperimentSampleEvaluation[]
 }
 
 model Experiment {
@@ -36,11 +36,12 @@ model Experiment {
   description          String?
   createdAt            DateTime     @default(now())
   parameters           Json         @default("{}")
-  runStatus            String
+  processStatus        String
+  processStatusHistory Json         @default("[]")
   samples              Json         @default("[]")
   userId               Int
   user                 User         @relation(fields: [userId], references: [id])
-  isReadyForReview     Boolean      @default(false)
+  isReadyForEvaluation Boolean      @default(false)
   isPublic             Boolean      @default(false)
   forkFromExperimentId Int?
   forkFromExperiment   Experiment?  @relation("Experiment_ExperimentSample_fromExperiment", fields: [forkFromExperimentId], references: [id])
@@ -60,15 +61,15 @@ model Sample {
 }
 
 model ExperimentSample {
-  id           Int                      @id @default(autoincrement())
+  id           Int                          @id @default(autoincrement())
   experimentId Int
-  experiment   Experiment               @relation(fields: [experimentId], references: [id])
+  experiment   Experiment                   @relation(fields: [experimentId], references: [id])
   sampleId     Int
-  sample       Sample                   @relation(fields: [sampleId], references: [id])
-  data         Json                     @default("{}")
-  createdAt    DateTime                 @default(now())
+  sample       Sample                       @relation(fields: [sampleId], references: [id])
+  data         Json                         @default("{}")
+  createdAt    DateTime                     @default(now())
   clips        Clip[]
-  reviews      ExperimentSampleReview[]
+  evaluations  ExperimentSampleEvaluation[]
 }
 
 model Clip {
@@ -77,10 +78,10 @@ model Clip {
   experimentSample   ExperimentSample @relation(fields: [experimentSampleId], references: [id])
   data               Json
   createdAt          DateTime         @default(now())
-  reviews            ClipReview[]
+  evaluations        ClipEvaluation[]
 }
 
-model ClipReview {
+model ClipEvaluation {
   id        Int      @id @default(autoincrement())
   clipId    Int
   clip      Clip     @relation(fields: [clipId], references: [id])
@@ -92,7 +93,7 @@ model ClipReview {
   comment   String?
 }
 
-model ExperimentSampleReview {
+model ExperimentSampleEvaluation {
   id                 Int              @id @default(autoincrement())
   experimentSampleId Int
   experimentSample   ExperimentSample @relation(fields: [experimentSampleId], references: [id])

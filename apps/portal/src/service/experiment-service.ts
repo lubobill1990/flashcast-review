@@ -13,7 +13,7 @@ export class ExperimentService {
       data: {
         name: $name,
         description: $description,
-        runStatus: 'created',
+        processStatus: 'created',
         userId: $userId,
         parameters: $parameters,
       },
@@ -42,7 +42,7 @@ export class ExperimentService {
       data: {
         name: `${fromExperiment.name} - Fork ${forkToExperimentsCount + 1}`,
         description: fromExperiment.description,
-        runStatus: 'created',
+        processStatus: 'created',
         parameters: fromExperiment.parameters!,
         userId: fromExperiment.userId,
       },
