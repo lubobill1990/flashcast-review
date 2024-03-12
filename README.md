@@ -1,4 +1,4 @@
-This is the web app for reviewing the flash cast generated video clips.
+This is the web app for evaluating the flash cast generated video clips.
 
 The repo contains the frontend and backend in pnpm monorepo style.
 
