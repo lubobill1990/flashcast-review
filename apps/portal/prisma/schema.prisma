@@ -19,15 +19,15 @@ datasource db {
 // }
 
 model User {
-  id                          Int                          @id @default(autoincrement())
-  email                       String                       @unique
-  avatar                      String?
-  name                        String
-  createdAt                   DateTime                     @default(now())
-  samples                     Sample[]
-  experiments                 Experiment[]
-  clipEvaluations             ClipEvaluation[]
-  experimentSampleEvaluations ExperimentSampleEvaluation[]
+  id                      Int                      @id @default(autoincrement())
+  email                   String                   @unique
+  avatar                  String?
+  name                    String
+  createdAt               DateTime                 @default(now())
+  samples                 Sample[]
+  experiments             Experiment[]
+  clipEvaluations         ClipEvaluation[]
+  sampleOutputEvaluations SampleOutputEvaluation[]
 }
 
 model Experiment {
@@ -44,41 +44,43 @@ model Experiment {
   isReadyForEvaluation Boolean      @default(false)
   isPublic             Boolean      @default(false)
   forkFromExperimentId Int?
-  forkFromExperiment   Experiment?  @relation("Experiment_ExperimentSample_fromExperiment", fields: [forkFromExperimentId], references: [id])
-  forkToExperiments    Experiment[] @relation("Experiment_ExperimentSample_fromExperiment")
+  forkFromExperiment   Experiment?  @relation("Experiment_SampleOutput_fromExperiment", fields: [forkFromExperimentId], references: [id])
+  forkToExperiments    Experiment[] @relation("Experiment_SampleOutput_fromExperiment")
 
-  experimentSample ExperimentSample[]
+  sampleOutputs SampleOutput[]
 }
 
 model Sample {
-  id               Int                @id @default(autoincrement())
-  data             Json
-  createdAt        DateTime           @default(now())
-  userId           Int
-  user             User               @relation(fields: [userId], references: [id])
-  isPublic         Boolean            @default(false)
-  experimentSample ExperimentSample[]
+  id            Int            @id @default(autoincrement())
+  data          Json
+  createdAt     DateTime       @default(now())
+  userId        Int
+  user          User           @relation(fields: [userId], references: [id])
+  isPublic      Boolean        @default(false)
+  sampleOutputs SampleOutput[]
 }
 
-model ExperimentSample {
-  id           Int                          @id @default(autoincrement())
+model SampleOutput {
+  id           Int                      @id @default(autoincrement())
   experimentId Int
-  experiment   Experiment                   @relation(fields: [experimentId], references: [id])
+  experiment   Experiment               @relation(fields: [experimentId], references: [id])
   sampleId     Int
-  sample       Sample                       @relation(fields: [sampleId], references: [id])
-  data         Json                         @default("{}")
-  createdAt    DateTime                     @default(now())
+  sample       Sample                   @relation(fields: [sampleId], references: [id])
+  status       String                   @default("created")
+  data         Json                     @default("{}")
+  createdAt    DateTime                 @default(now())
   clips        Clip[]
-  evaluations  ExperimentSampleEvaluation[]
+  evaluations  SampleOutputEvaluation[]
+  jwtSecret    String                   @default(uuid())
 }
 
 model Clip {
-  id                 Int              @id @default(autoincrement())
-  experimentSampleId Int
-  experimentSample   ExperimentSample @relation(fields: [experimentSampleId], references: [id])
-  data               Json
-  createdAt          DateTime         @default(now())
-  evaluations        ClipEvaluation[]
+  id             Int              @id @default(autoincrement())
+  sampleOutputId Int
+  sampleOutput   SampleOutput     @relation(fields: [sampleOutputId], references: [id])
+  data           Json
+  createdAt      DateTime         @default(now())
+  evaluations    ClipEvaluation[]
 }
 
 model ClipEvaluation {
@@ -93,14 +95,14 @@ model ClipEvaluation {
   comment   String?
 }
 
-model ExperimentSampleEvaluation {
-  id                 Int              @id @default(autoincrement())
-  experimentSampleId Int
-  experimentSample   ExperimentSample @relation(fields: [experimentSampleId], references: [id])
-  userId             Int
-  user               User             @relation(fields: [userId], references: [id])
-  createdAt          DateTime         @default(now())
-  data               Json             @default("{}")
-  score              Int
-  comment            String?
+model SampleOutputEvaluation {
+  id             Int          @id @default(autoincrement())
+  sampleOutputId Int
+  sampleOutput   SampleOutput @relation(fields: [sampleOutputId], references: [id])
+  userId         Int
+  user           User         @relation(fields: [userId], references: [id])
+  createdAt      DateTime     @default(now())
+  data           Json         @default("{}")
+  score          Int
+  comment        String?
 }
