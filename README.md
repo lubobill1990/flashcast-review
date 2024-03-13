@@ -69,6 +69,7 @@ pnpm db:generate
 Run the development server:
 
 ```bash
+pnpm install
 pnpm dev
 ```
 
@@ -92,7 +93,7 @@ To learn more about Next.js, take a look at the following resources:
 In client component, you can use `useSession` hook to get the session object. The session object contains the user information:
 
 ```ts
-import { useSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
 
 const { data: session, status } = useSession();
 ```
@@ -100,7 +101,7 @@ const { data: session, status } = useSession();
 In server component or API route, you can use `getServerSession` function to get the session object:
 
 ```ts
-import { getServerSession } from 'next-auth';
+import { getServerSession } from "next-auth";
 
 const session = await getServerSession();
 ```
@@ -110,12 +111,12 @@ const session = await getServerSession();
 You could use fetch + API route to submit data to server:
 
 ```ts
-const response = await fetch('/api/submit', {
-  method: 'POST',
+const response = await fetch("/api/submit", {
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
-  body: JSON.stringify({ data: 'some data' }),
+  body: JSON.stringify({ data: "some data" }),
 });
 ```
 
@@ -124,14 +125,14 @@ But, a more convenient way is to use `useFormState` and `useFormStatus` hook + s
 In server action:
 
 ```ts
-'use server';
+"use server";
 
-import { getServerSession } from 'next-auth';
+import { getServerSession } from "next-auth";
 
 export async function submit(_currentState: unknown, formData: FormData) {
   const session = await getServerSession();
 
-  return { data: 'some data to return back to client', errors: [] };
+  return { data: "some data to return back to client", errors: [] };
 }
 ```
 
