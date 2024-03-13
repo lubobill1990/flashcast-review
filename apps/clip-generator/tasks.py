@@ -1,8 +1,10 @@
 from celery import Celery
 import requests
 
+import celeryconfig
 # Initialize Celery
-celery = Celery('tasks', backend='redis://localhost:6379/0', broker='redis://localhost:6379/0')
+celery = Celery('tasks')
+celery.config_from_object(celeryconfig)
 
 def getValue(dictionary, key_string):
     keys = key_string.split('.')
@@ -26,6 +28,7 @@ def process_video(params):
     createdAt = params.get('createdAt')
     webhooks = params.get('webhooks')
     update_status_url = getValue(webhooks, 'onStatusChange.url')
+    upload_clip_url = getValue(webhooks, 'onNewClip.url')
     print(update_status_url, webhooks)
     requests.post(update_status_url, json={"status": "queued"})
 

@@ -3,6 +3,10 @@
 from flask import Flask, request, jsonify
 from jsonschema import validate
 from tasks import process_video
+from load_env import load_env
+import os
+
+load_env()
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -41,10 +45,13 @@ schema = {
     },
 }
 
+@app.route('/', methods=['GET'])
+def health():
+    return jsonify({'status': 'healthy'}), 200
+
 # Define a route to submit video processing tasks
 @app.route('/api/process-video', methods=['POST'])
-def submit_video_task():
-    video_url = request.json.get('video_url')
+def submit_video_process_task():
     params = request.json
     try:
         validate(instance=params, schema=schema)
@@ -53,7 +60,7 @@ def submit_video_task():
 
     # Submit the video processing task to Celery
     task = process_video.delay(params)
-    
+
     return jsonify({'task_id': task.id}), 200
 
 
@@ -73,6 +80,7 @@ def get_task_status(task_id):
 
     return jsonify({'task_status': status}), 200
 
+debug = os.getenv('DEBUG') == 'True'
 
 if __name__ == '__main__':
     app.run(debug=True)

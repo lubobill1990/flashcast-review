@@ -1,0 +1,26 @@
+from tasks import process_video
+import unittest
+
+class TestAddFunction(unittest.TestCase):
+    def test_add_positive_numbers(self):
+        process_video.delay({
+            "jobId": "extract-123",
+            "sampleId": 1,
+            "experimentId": 1,
+            "parameters": {},
+            "videoFile": {},
+            "transcriptionFile": {},
+            "aiNotes": "test",
+            "createdAt": "2021-01-01T00:00:00",
+            "webhooks": {
+                "onStatusChange": {
+                    "url": "http://10.172.208.44:8000/a.dot"
+                },
+                "onNewClip": {
+                    "url": "http://10.172.208.44:8000/a.dot"
+                }
+            }
+        })
+
+if __name__ == '__main__':
+    unittest.main()
