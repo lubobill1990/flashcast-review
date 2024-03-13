@@ -2,25 +2,25 @@ import { PrismaClient } from "@prisma/client";
 import { SampleService } from "@/service/sample-service";
 import { UserService } from "@/service/user-service";
 
-const pool = new Map();
-
 export class ServiceFactory {
     constructor() {
-        this.prismaClient = new PrismaClient();
+        this._prismaClient = new PrismaClient();
     }
-    prismaClient: PrismaClient;
+    _prismaClient: PrismaClient;
+    _sampleService: SampleService | undefined;
+    _userService: UserService | undefined;
 
     get sampleService() {
-        if (!pool.has("sampleService")) {
-            pool.set("sampleService", new SampleService(this.prismaClient));
+        if(!this._sampleService) {
+            this._sampleService = new SampleService(this._prismaClient);
         }
-        return pool.get("sampleService");
+        return this._sampleService;
     }
     get userService() {
-        if (!pool.has("userService")) {
-            pool.set("userService", new UserService(this.prismaClient));
+        if(!this._userService) {
+            this._userService = new UserService(this._prismaClient);
         }
-        return pool.get("userService");
+        return this._userService;
     }
 }
 

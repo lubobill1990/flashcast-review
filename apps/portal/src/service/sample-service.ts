@@ -6,7 +6,7 @@ export class SampleService {
 
     }
 
-    async createSample(data: { recording: File, transcription: File, notes: string }, isPublic = true): Promise<Sample> {
+    async createSample(data: { recording: string, transcription: string, notes: string }, isPublic = true): Promise<Sample> {
         const session = await getServerSession();
         
         // find the user by email
@@ -19,14 +19,14 @@ export class SampleService {
         if (!user) throw new Error("User not found");
         
         // upload file to cloud storage, and get back urls 
-        const recordingUrl = "";
-        const transcriptionUrl = "";
+        // const recordingUrl = "";
+        // const transcriptionUrl = "";
         // save the sample to the database
         const sample = await this.prisma.sample.create({
             data: {
                 data: {
-                    recording: recordingUrl,
-                    transcription: transcriptionUrl,
+                    recording: data.recording,
+                    transcription: data.transcription,
                     notes: data.notes,
                 },
                 isPublic,
