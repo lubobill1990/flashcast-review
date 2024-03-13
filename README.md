@@ -172,3 +172,5 @@ After applying the migration, you need to run the following command to generate 
 ```bash
 pnpm db:generate
 ```
+
+## setting up portal ui
