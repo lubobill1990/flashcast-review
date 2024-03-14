@@ -2,14 +2,16 @@
 
 import factory from "@/factory";
 
-export async function submit(_currentState: unknown, formData: FormData) { 
-
-  const data = {
-    recording: formData.get("recording") as File,
-    transcription: formData.get("transcription") as File,
+export async function submit(formData: FormData) {
+  const sampleData = {
+    recording: '',
+    transcription: '',
     notes: formData.get("notes") as string,
-  };
+  }
+  const recording = formData.get("recording") as File;
+  const transcription = formData.get("transcription") as File;
+  const notes = formData.get("notes") as string;
 
-  console.log(data);
-  return factory.sampleService.createSample(data);
+  console.log('sample submitted:', sampleData);
+  return factory.sampleService.createSample({recording, transcription, notes});
 }

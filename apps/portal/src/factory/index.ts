@@ -1,27 +1,37 @@
 import { PrismaClient } from "@prisma/client";
 import { SampleService } from "@/service/sample-service";
 import { UserService } from "@/service/user-service";
-
-const pool = new Map();
+import { BlobService } from "@/service/blob-service";
 
 export class ServiceFactory {
-    constructor() {
-        this.prismaClient = new PrismaClient();
-    }
-    prismaClient: PrismaClient;
+  constructor() {
+    this._prismaClient = new PrismaClient();
+  }
+  private _prismaClient: PrismaClient;
+  private _sampleService: SampleService | undefined;
+  private _userService: UserService | undefined;
+  private _blobService: BlobService | undefined;
 
-    get sampleService() {
-        if (!pool.has("sampleService")) {
-            pool.set("sampleService", new SampleService(this.prismaClient));
-        }
-        return pool.get("sampleService");
+  get sampleService() {
+    if(!this._sampleService) {
+      this._sampleService = new SampleService(this._prismaClient);
     }
-    get userService() {
-        if (!pool.has("userService")) {
-            pool.set("userService", new UserService(this.prismaClient));
-        }
-        return pool.get("userService");
+    return this._sampleService;
+  }
+
+  get userService() {
+    if(!this._userService) {
+      this._userService = new UserService(this._prismaClient);
     }
+    return this._userService;
+  }
+
+  get blobService() {
+    if(!this._blobService) {
+      this._blobService = new BlobService();
+    }
+    return this._blobService;
+  }
 }
 
 const factory = new ServiceFactory();
