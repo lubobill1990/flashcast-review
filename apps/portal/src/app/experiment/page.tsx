@@ -12,7 +12,7 @@ export default async function Page() {
           <Link href='/experiment/create'>Create experiment</Link>
         </Button>
       </div>
-      <div>{experiments.map((v) => v.id)}</div>
+      <ul>{experiments.map((v) => <li key={v.id}>{v.id}</li>)}</ul>
     </div>
   );
 }
