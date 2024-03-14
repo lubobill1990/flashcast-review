@@ -4,7 +4,8 @@ import { AuthButton } from './login';
 export const NavBar = () => {
   return (
     <nav className='flex justify-center'>
-      <ul className='flex-1 flex gap-3'>
+      <span className='flex-1 flex gap-3'>FlashCast Reels Portal</span>
+      {/* <ul className='flex-1 flex gap-3'>
         <li className=''>
           <Link className='p-4 flex justify-center align-center' href='/'>
             Home
@@ -23,7 +24,7 @@ export const NavBar = () => {
             Samples
           </Link>
         </li>
-      </ul>
+      </ul> */}
       <ul>
         <li>
           <AuthButton />

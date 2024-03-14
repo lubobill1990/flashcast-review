@@ -31,32 +31,31 @@ model User {
 }
 
 model Experiment {
-  id                   Int          @id @default(autoincrement())
+  id                   Int                  @id @default(autoincrement())
   name                 String
   description          String?
-  createdAt            DateTime     @default(now())
-  parameters           Json         @default("{}")
+  createdAt            DateTime             @default(now())
+  parameters           Json                 @default("{}")
   processStatus        String
-  processStatusHistory Json         @default("[]")
-  samples              Json         @default("[]")
+  processStatusHistory Json                 @default("[]")
+  samples              Json
   userId               Int
-  user                 User         @relation(fields: [userId], references: [id])
-  isReadyForEvaluation Boolean      @default(false)
-  isPublic             Boolean      @default(false)
+  user                 User                 @relation(fields: [userId], references: [id])
+  isReadyForEvaluation Boolean              @default(false)
+  isPublic             Boolean              @default(false)
   forkFromExperimentId Int?
-  forkFromExperiment   Experiment?  @relation("Experiment_SampleOutput_fromExperiment", fields: [forkFromExperimentId], references: [id])
-  forkToExperiments    Experiment[] @relation("Experiment_SampleOutput_fromExperiment")
-
-  sampleOutputs SampleOutput[]
+  forkFromExperiment   Experiment?          @relation("Experiment_SampleOutput_fromExperiment", fields: [forkFromExperimentId], references: [id])
+  forkToExperiments    Experiment[]         @relation("Experiment_SampleOutput_fromExperiment")
+  sampleOutputs        SampleOutput[]
 }
 
 model Sample {
-  id            Int            @id @default(autoincrement())
+  id            Int                  @id @default(autoincrement())
   data          Json
-  createdAt     DateTime       @default(now())
+  createdAt     DateTime             @default(now())
   userId        Int
-  user          User           @relation(fields: [userId], references: [id])
-  isPublic      Boolean        @default(false)
+  user          User                 @relation(fields: [userId], references: [id])
+  isPublic      Boolean              @default(false)
   sampleOutputs SampleOutput[]
 }
 

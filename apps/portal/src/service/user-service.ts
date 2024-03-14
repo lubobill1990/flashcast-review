@@ -1,4 +1,5 @@
 import { PrismaClient, User } from '@prisma/client';
+import { getServerSession } from 'next-auth';
 
 export class UserService {
   constructor(private prisma: PrismaClient) {}
@@ -13,6 +14,15 @@ export class UserService {
       },
     });
 
+    return user;
+  }
+  
+  async getUser() {
+    const userEmail = await getServerSession().then(session => session?.user?.email);
+    if (!userEmail) throw new Error("User not found in session");
+
+    const user = await this.getUserByEmail(userEmail);
+    if (!user) throw new Error("User not found");
     return user;
   }
 

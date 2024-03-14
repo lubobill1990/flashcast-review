@@ -5,9 +5,7 @@ import { BlobService } from "./blob-service";
 const STORAGE_CONTAINER_NAME = "samples";
 
 export class SampleService {
-  constructor(private prisma: PrismaClient) {
-
-  }
+  constructor(private prisma: PrismaClient) {}
 
   private _blobService: BlobService | undefined;
   private get blobService() {
@@ -15,6 +13,18 @@ export class SampleService {
       this._blobService = new BlobService();
     }
     return this._blobService;
+  }
+
+  private async getUser() {
+    const session = await getServerSession();
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: session?.user?.email || "",
+      },
+    });
+
+    if (!user) throw new Error("User not found");
+    return user;
   }
 
   async createSample(data: { recording: File, transcription: File, notes: string }, isPublic = true): Promise<Sample> {
@@ -56,18 +66,34 @@ export class SampleService {
   }
 
   async getSamples(): Promise<Sample[]> {
-    const session = await getServerSession();
-    const user = await this.prisma.user.findFirst({
-      where: {
-        email: session?.user?.email || "",
-      },
-    });
-    if (!user) throw new Error("User not found");
+    const user = await this.getUser();
     const samples = await this.prisma.sample.findMany({
       where: {
         userId: user.id,
       },
     });
     return samples;
+  }
+
+  async getSample(id: number) {
+    const user = await this.getUser();
+    const sample = await this.prisma.sample.findUniqueOrThrow({
+      where: {
+        id,
+        userId: user.id,
+      },
+    });
+    if (!sample) throw new Error("Sample not found");
+    return sample;
+  }
+
+  async deleteSample(id: number) {
+    const user = await this.getUser();
+    await this.prisma.sample.delete({
+      where: {
+        id,
+        userId: user.id,
+      },
+    });
   }
 }

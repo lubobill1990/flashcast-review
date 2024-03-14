@@ -1,21 +1,23 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Sample } from '@prisma/client';
 
 export class ExperimentService {
   constructor(private prisma: PrismaClient) {}
 
   async createExperiment(
-    $userId: number,
-    $name: string,
-    $description: string,
-    $parameters: any
+    userId: number,
+    name: string,
+    description: string,
+    parameters: any,
+    sampleIds: number[],
   ) {
     const newExperiment = await this.prisma.experiment.create({
       data: {
-        name: $name,
-        description: $description,
+        name,
+        description,
         processStatus: 'created',
-        userId: $userId,
-        parameters: $parameters,
+        userId,
+        parameters,
+        samples: sampleIds,
       },
     });
 
@@ -45,6 +47,7 @@ export class ExperimentService {
         processStatus: 'created',
         parameters: fromExperiment.parameters!,
         userId: fromExperiment.userId,
+        samples: fromExperiment.samples!,
       },
     });
 
