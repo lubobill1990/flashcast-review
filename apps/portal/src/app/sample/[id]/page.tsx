@@ -14,7 +14,6 @@ export default async function Page({ params: { id } }) {
       id: toInteger(id),
     },
   });
-  console.log(sample);
   if (!sample?.data) {
     return <div>No Such Sample</div>
   }
