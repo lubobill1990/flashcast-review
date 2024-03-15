@@ -1,7 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import factory from '@/factory';
 import { Button } from '@radix-ui/themes';
 import Link from 'next/link';
-const prisma = new PrismaClient();
+
+const prisma = factory.prismaClient;
 
 export default async function Page() {
   const experiments = await prisma.experiment.findMany();

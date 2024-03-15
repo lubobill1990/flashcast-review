@@ -19,5 +19,8 @@ export async function submit(formData: FormData) {
   );
   const sampleOutput = await factory.sampleOutputService.createSampleOutput(experiment.id, sample.id);
 
-  return Promise.resolve(sample);
+  // Mock the creation of 10 clips
+  Promise.allSettled(new Array(10).fill(0).map(() => factory.clipService.createClip(sampleOutput.id, `sample.url/${UUID()}`)));
+
+  return Promise.resolve(sampleOutput.id);
 }

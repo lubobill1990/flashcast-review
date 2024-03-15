@@ -1,5 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import factory from '@/factory';
+
+const prisma = factory.prismaClient;
 
 export default async function Page() {
   const experiments = await prisma.experiment.findMany();

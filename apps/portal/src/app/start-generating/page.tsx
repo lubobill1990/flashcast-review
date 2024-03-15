@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { useRouter } from "next/navigation";
 import { submit } from './actions';
@@ -7,15 +7,16 @@ import Link from "next/link";
 
 export default function Page() {
   const router = useRouter();
+
   const handleSubmit = (formData: FormData) => {
-    submit(formData).then(sample => sample?.id && router.push(`/my-reels/${sample.id}`));
+    submit(formData).then(id => router.push(`/my-reels/${id}`));
   }
 
   return (
     <div>
       <Branding />
       <nav>
-        <Link href='/start-generating'>Start generating</Link>
+        <Link href='/start-generating' className='active-nav-link'>Start generating</Link>
         <Link href='/my-reels'>My reels</Link>
       </nav>
       <form action={handleSubmit}>

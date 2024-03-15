@@ -20,14 +20,24 @@ export class SampleOutputService {
     });
   }
 
-  async getSampleOutput(id: number) {
+  async getUserSampleOutputById(userId: number, sampleOutputId: number) {
     return this.prisma.sampleOutput.findUniqueOrThrow({
       where: {
-        id,
+        id: sampleOutputId,
       },
       include: {
+        evaluations: {
+          where: {
+            userId
+          }
+        },
         sample: true,
-      }
-    });;
+        clips: {
+          include: {
+            evaluations: true,
+          },
+        },
+      },
+    });
   }
 }

@@ -16,7 +16,8 @@ type Params = {
 
 export default async function Page({ params: { id } }: Params) {
   const sampleId = toInteger(id);
-  const sample = (await factory.sampleOutputService.getSampleOutput(sampleId)).sample;
+  const user = await factory.userService.getUser();
+  const sample = (await factory.sampleOutputService.getUserSampleOutputById(user.id, sampleId)).sample;
   
   if (!sample?.data) {
     return <div>Artifacts unavailable</div>
@@ -27,8 +28,9 @@ export default async function Page({ params: { id } }: Params) {
   return (
     <div>
       <nav>
+        <Link href='/my-reels'>Back</Link>
         <Link href={`/my-reels/${id}`}>Generated reels</Link>
-        <Link href={`/my-reels/${id}/artifacts`}>Uploaded artifacts</Link>
+        <Link href={`/my-reels/${id}/artifacts`} className='active-nav-link'>Uploaded artifacts</Link>
       </nav>
       <div>
         Recording: {data.recording}

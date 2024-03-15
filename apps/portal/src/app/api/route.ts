@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { NextApiRequest } from 'next';
+import factory from '@/factory';
 
-const prisma = new PrismaClient();
+const prisma = factory.prismaClient;
 
 export async function GET(req: NextApiRequest) {
   const session = await getServerSession();

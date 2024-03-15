@@ -23,6 +23,7 @@ export class UserService {
 
     const user = await this.getUserByEmail(userEmail);
     if (!user) throw new Error("User not found");
+    console.log('getUser', user);
     return user;
   }
 

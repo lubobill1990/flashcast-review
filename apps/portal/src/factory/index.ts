@@ -4,6 +4,8 @@ import { UserService } from "@/service/user-service";
 import { BlobService } from "@/service/blob-service";
 import { ExperimentService } from "@/service/experiment-service";
 import { SampleOutputService } from "@/service/sample-output-service";
+import { ClipService } from "@/service/clip-service";
+import { EvaluationService } from "@/service/evaluation-services";
 
 export class ServiceFactory {
   private _prismaClient: PrismaClient;
@@ -12,6 +14,8 @@ export class ServiceFactory {
   private _sampleService: SampleService | undefined;
   private _experimentService: ExperimentService | undefined;
   private _sampleOutputService: SampleOutputService | undefined;
+  private _clipService: ClipService | undefined;
+  private _evaluationService: EvaluationService | undefined;
 
   constructor() {
     this._prismaClient = new PrismaClient();
@@ -54,6 +58,20 @@ export class ServiceFactory {
       this._sampleOutputService = new SampleOutputService(this._prismaClient);
     }
     return this._sampleOutputService;
+  }
+
+  get clipService() {
+    if(!this._clipService) {
+      this._clipService = new ClipService(this._prismaClient);
+    }
+    return this._clipService;
+  }
+
+  get evaluationService() {
+    if(!this._evaluationService) {
+      this._evaluationService = new EvaluationService(this._prismaClient);
+    }
+    return this._evaluationService;
   }
 }
 

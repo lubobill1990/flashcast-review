@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { getSampleOutputOrThrow } from '../sample-output-api-util';
+import factory from '@/factory';
 
-const prisma = new PrismaClient();
+const prisma = factory.prismaClient;
 
 export async function POST(
   req: NextRequest,

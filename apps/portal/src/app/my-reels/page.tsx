@@ -11,7 +11,7 @@ export default async function Page() {
       <Branding />
       <nav>
         <Link href='/start-generating'>Start generating</Link>
-        <Link href='/my-reels'>My reels</Link>
+        <Link href='/my-reels' className='active-nav-link'>My reels</Link>
       </nav>
       {
         sampleOutputs

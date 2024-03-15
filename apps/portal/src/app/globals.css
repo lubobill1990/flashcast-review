@@ -24,3 +24,16 @@ html.dark {
     text-wrap: balance;
   }
 }
+
+nav .active-nav-link {
+  border: solid blue;
+  border-width: 0 0 2px 0;
+}
+
+nav a {
+  margin-right: 5px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
