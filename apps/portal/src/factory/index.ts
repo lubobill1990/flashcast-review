@@ -1,11 +1,12 @@
-import { PrismaClient } from "@prisma/client";
-import { SampleService } from "@/service/sample-service";
-import { UserService } from "@/service/user-service";
-import { BlobService } from "@/service/blob-service";
-import { ExperimentService } from "@/service/experiment-service";
-import { SampleOutputService } from "@/service/sample-output-service";
 import { ClipService } from "@/service/clip-service";
 import { EvaluationService } from "@/service/evaluation-services";
+import { PrismaClient } from '@prisma/client';
+import { SampleService } from '@/service/sample-service';
+import { UserService } from '@/service/user-service';
+import { BlobService } from '@/service/blob-service';
+import { ExperimentService } from '@/service/experiment-service';
+import { SampleOutputService } from '@/service/sample-output-service';
+import prisma from '@/service/db';
 
 export class ServiceFactory {
   private _prismaClient: PrismaClient;
@@ -18,7 +19,7 @@ export class ServiceFactory {
   private _evaluationService: EvaluationService | undefined;
 
   constructor() {
-    this._prismaClient = new PrismaClient();
+    this._prismaClient = prisma;
   }
 
   get prismaClient() {
@@ -26,35 +27,35 @@ export class ServiceFactory {
   }
 
   get blobService() {
-    if(!this._blobService) {
+    if (!this._blobService) {
       this._blobService = new BlobService();
     }
     return this._blobService;
   }
 
   get userService() {
-    if(!this._userService) {
+    if (!this._userService) {
       this._userService = new UserService(this._prismaClient);
     }
     return this._userService;
   }
 
   get sampleService() {
-    if(!this._sampleService) {
+    if (!this._sampleService) {
       this._sampleService = new SampleService(this._prismaClient);
     }
     return this._sampleService;
   }
 
   get experimentService() {
-    if(!this._experimentService) {
+    if (!this._experimentService) {
       this._experimentService = new ExperimentService(this._prismaClient);
     }
     return this._experimentService;
   }
 
   get sampleOutputService() {
-    if(!this._sampleOutputService) {
+    if (!this._sampleOutputService) {
       this._sampleOutputService = new SampleOutputService(this._prismaClient);
     }
     return this._sampleOutputService;

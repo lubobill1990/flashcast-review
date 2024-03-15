@@ -2,20 +2,19 @@
  * @jest-environment node
  */
 
-import { PrismaClient } from '@prisma/client';
 import { ExperimentService } from './experiment-service';
+import { prisma } from '@/service/db';
 
 describe('ExperimentService', () => {
   it('', async () => {
-    const prismaClient = new PrismaClient();
-    let user = await prismaClient.user.findFirst({
+    let user = await prisma.user.findFirst({
       where: {
         email: 'diw@fiwe.ci',
       },
     });
 
     if (user === null) {
-      user = await prismaClient.user.create({
+      user = await prisma.user.create({
         data: {
           email: 'diw@fiwe.ci',
           name: 'xxfwe',
@@ -23,12 +22,13 @@ describe('ExperimentService', () => {
       });
     }
 
-    const service = new ExperimentService(prismaClient);
+    const service = new ExperimentService(prisma);
     const exp = await service.createExperiment(
       user.id,
       'name',
       'description',
-      {}
+      {},
+      []
     );
     expect(exp).toBeDefined();
     expect(exp.id).toBeDefined();
