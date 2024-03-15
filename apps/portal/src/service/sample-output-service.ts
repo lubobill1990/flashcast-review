@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 export class SampleOutputService {
   constructor(private prisma: PrismaClient) {}
@@ -29,6 +29,7 @@ export class SampleOutputService {
         id: sampleOutputId,
       },
       include: {
+        experiment: true,
         evaluations: {
           where: {
             userId,

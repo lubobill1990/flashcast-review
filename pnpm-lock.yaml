@@ -13,6 +13,12 @@ importers:
       '@azure/storage-blob':
         specifier: ^12.17.0
         version: 12.17.0
+      '@fluentui/react-components':
+        specifier: ^9.46.8
+        version: 9.46.8(@types/react-dom@18.2.21)(@types/react@18.2.64)(react-dom@18.2.0)(react@18.2.0)(scheduler@0.23.0)
+      '@fluentui/react-rating-preview':
+        specifier: ^0.4.0
+        version: 0.4.0(@types/react-dom@18.2.21)(@types/react@18.2.64)(react-dom@18.2.0)(react@18.2.0)
       '@prisma/adapter-pg':
         specifier: ^5.10.2
         version: 5.10.2(pg@8.11.3)
@@ -2514,6 +2520,27 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
       - scheduler
+    dev: false
+
+  /@fluentui/react-rating-preview@0.4.0(@types/react-dom@18.2.21)(@types/react@18.2.64)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-eKC3GU8VbxeVoypUh+G8futOTogvfmY31vCFoZs37XM/nGt9q4LucK1dduGQXUHV0zy6YNloKvozu3rVUt1VoA==}
+    peerDependencies:
+      '@types/react': '>=16.8.0 <19.0.0'
+      '@types/react-dom': '>=16.8.0 <19.0.0'
+      react: '>=16.8.0 <19.0.0'
+      react-dom: '>=16.8.0 <19.0.0'
+    dependencies:
+      '@fluentui/react-icons': 2.0.232(react@18.2.0)
+      '@fluentui/react-jsx-runtime': 9.0.32(@types/react@18.2.64)(react@18.2.0)
+      '@fluentui/react-tabster': 9.19.3(@types/react-dom@18.2.21)(@types/react@18.2.64)(react-dom@18.2.0)(react@18.2.0)
+      '@fluentui/react-theme': 9.1.17
+      '@fluentui/react-utilities': 9.18.3(@types/react@18.2.64)(react@18.2.0)
+      '@griffel/react': 1.5.20(react@18.2.0)
+      '@swc/helpers': 0.5.2
+      '@types/react': 18.2.64
+      '@types/react-dom': 18.2.21
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /@fluentui/react-select@9.1.66(@types/react-dom@18.2.21)(@types/react@18.2.64)(react-dom@18.2.0)(react@18.2.0)(scheduler@0.23.0):

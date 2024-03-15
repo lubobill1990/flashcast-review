@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@azure/storage-blob": "^12.17.0",
+    "@fluentui/react-components": "^9.46.8",
+    "@fluentui/react-rating-preview": "^0.4.0",
     "@prisma/adapter-pg": "^5.10.2",
     "@prisma/client": "^5.10.2",
     "@radix-ui/themes": "^2.0.3",
