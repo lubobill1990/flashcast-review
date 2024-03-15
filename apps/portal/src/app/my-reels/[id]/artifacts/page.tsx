@@ -1,10 +1,6 @@
-'use client';
-
-import { Sample } from '@prisma/client';
 import { toInteger } from 'lodash-es';
-import { getSample, getSampleOutput } from './actions';
-import * as React from 'react';
 import Link from 'next/link';
+import factory from "@/factory";
 
 type SampleData = {
   recording: string;
@@ -12,22 +8,15 @@ type SampleData = {
   notes: string;
 }
 
-export default function Page({ params: { id } }) {
-  const sampleId = toInteger(id);
-  const [sample, setSample] = React.useState<Sample | undefined>();
-  const [isFetching, setFetching] = React.useState(true);
-
-  React.useEffect(() => {
-    getSampleOutput(sampleId)
-      .then(sampleOutput => getSample(sampleOutput.sampleId))
-      .then(sample => sample && setSample(sample))
-      .catch(() => {})
-      .finally(() => setFetching(false));
-    }, [sampleId, setFetching, setSample]);
-  
-  if (isFetching) {
-    return <div>Loading</div>
+type Params = {
+  params: {
+    id: string,
   }
+}
+
+export default async function Page({ params: { id } }: Params) {
+  const sampleId = toInteger(id);
+  const sample = (await factory.sampleOutputService.getSampleOutput(sampleId)).sample;
   
   if (!sample?.data) {
     return <div>Artifacts unavailable</div>

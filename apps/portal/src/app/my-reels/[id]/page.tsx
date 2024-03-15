@@ -1,26 +1,16 @@
-'use client';
-
-import { SampleOutput } from '@prisma/client';
 import { toInteger } from 'lodash-es';
-import { getSampleOutput } from './actions';
-import * as React from 'react';
 import Link from 'next/link';
+import factory from "@/factory";
 
-export default function Page({ params: { id } }) {
-  const sampleId = toInteger(id);
-  const [sampleOutput, setSampleOutput] = React.useState<SampleOutput | undefined>();
-  const [isFetching, setFetching] = React.useState(true);
-
-  React.useEffect(() => {
-    getSampleOutput(sampleId)
-      .then(sampleOutput => sampleOutput && setSampleOutput(sampleOutput))
-      .catch(() => {})
-      .finally(() => setFetching(false));
-    }, [sampleId, setFetching, setSampleOutput]);
-  
-  if (isFetching) {
-    return <div>Loading</div>
+type Params = {
+  params: {
+    id: string,
   }
+}
+
+export default async function Page({ params: { id } }: Params) {
+  const sampleId = toInteger(id);
+  const sampleOutput = await factory.sampleOutputService.getSampleOutput(sampleId);
   
   if (!sampleOutput) {
     return <div>Reels unavailable</div>
