@@ -1,4 +1,4 @@
-import Star from '@/asset/star.svg';
+// import Star from '@/asset/star.svg';
 
 export default function Branding() {
   return (
@@ -14,7 +14,7 @@ export default function Branding() {
           }}
         >
           FlashCast Reels Portal
-          <Star className='inline align-super ml-2'></Star>
+          {/* <Star className='inline align-super ml-2'></Star> */}
         </span>
       </h1>
       <p className='text-base font-semibold mb-8'>

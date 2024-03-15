@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { NavBar } from 'portal-ui';
-import { ThemeSwitch } from './theme-switch';
+// import { ThemeSwitch } from './theme-switch';
 import { cookies } from 'next/headers';
 import { getServerSession } from 'next-auth';
 import { LoginButton } from './login';
@@ -54,7 +54,7 @@ export default async function RootLayout({
             <div className='container mx-auto py-16 px-2'>{children}</div>
             <footer className='flex'>
               <p className='flex-1'>© {new Date().getFullYear()} FlashCast</p>
-              <ThemeSwitch></ThemeSwitch>
+              {/* <ThemeSwitch></ThemeSwitch> */}
             </footer>
           </Providers>
         )}

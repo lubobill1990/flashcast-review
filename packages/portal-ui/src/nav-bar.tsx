@@ -1,16 +1,14 @@
 'use client';
 
-import Link from 'next/link';
 import { AuthButton } from './auth-buttons';
 
 import { makeStyles, shorthands } from '@fluentui/react-components';
 import Logo from './logo.svg';
-import Image from 'next/image';
 
 const useStyles = makeStyles({
   root: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     height: '40px',
     paddingLeft: '20px',
     paddingRight: '20px',
@@ -30,30 +28,30 @@ export const NavBar = () => {
   const classes = useStyles();
   return (
     <nav className={classes.root}>
-      <Link href='/' className='flex items-center text-sm font-bold'>
+      <a href='/' className='flex items-center text-sm font-bold'>
         <Logo className='mr-2' />
         FlashCast Reels Portal
-      </Link>
-      <ul className='flex-1 flex gap-3'>
+      </a>
+      {/* <ul className='flex-1 flex gap-3'>
         <li className=''>
-          <Link className='p-4 flex justify-center align-center' href='/'>
+          <a className='p-4 flex justify-center align-center' href='/'>
             Home
-          </Link>
+          </a>
         </li>
         <li>
-          <Link
+          <a
             className='p-4 flex justify-center align-center'
             href='/experiment'
           >
             Experiments
-          </Link>
+          </a>
         </li>
         <li>
-          <Link className='p-4 flex justify-center align-center' href='/sample'>
+          <a className='p-4 flex justify-center align-center' href='/sample'>
             Samples
-          </Link>
+          </a>
         </li>
-      </ul>
+      </ul> */}
       <ul className='flex gap-3'>
         <li>
           <AuthButton />

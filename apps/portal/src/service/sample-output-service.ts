@@ -15,8 +15,11 @@ export class SampleOutputService {
   async getSampleOutputsByUserId(userId: number) {
     return this.prisma.sampleOutput.findMany({
       where: {
-        sample: {userId}
-      }
+        sample: { userId },
+      },
+      include: {
+        clips: true,
+      },
     });
   }
 
@@ -28,8 +31,8 @@ export class SampleOutputService {
       include: {
         evaluations: {
           where: {
-            userId
-          }
+            userId,
+          },
         },
         sample: true,
         clips: {
