@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-import { v4 } from 'uuid';
+import { PrismaClient } from "@prisma/client";
+import { v4 } from "uuid";
 
 export class PrismaTestingUtil {
   constructor(private prisma: PrismaClient) {
@@ -10,7 +10,7 @@ export class PrismaTestingUtil {
     return this.prisma.user.create({
       data: {
         email: `${v4()}@test.com`,
-        name: 'test',
+        name: "test",
       },
     });
   }
@@ -30,9 +30,9 @@ export class PrismaTestingUtil {
 
     return this.prisma.experiment.create({
       data: {
-        name: 'test',
-        description: 'test',
-        processStatus: 'created',
+        name: "test",
+        description: "test",
+        processStatus: "created",
         userId: $userId,
       },
     });
@@ -48,14 +48,14 @@ export class PrismaTestingUtil {
         userId: $userId,
         data: {
           videoFile: {
-            path: 'test',
-            url: 'test',
+            path: "test",
+            url: "test",
           },
           transcriptionFile: {
-            path: 'test',
-            url: 'test',
+            path: "test",
+            url: "test",
           },
-          aiNotes: 'test',
+          aiNotes: "test",
         },
       },
     });

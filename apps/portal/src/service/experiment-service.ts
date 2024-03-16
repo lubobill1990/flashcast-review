@@ -1,4 +1,4 @@
-import { PrismaClient, Sample } from '@prisma/client';
+import { PrismaClient, Sample } from "@prisma/client";
 
 export class ExperimentService {
   constructor(private prisma: PrismaClient) {}
@@ -8,13 +8,13 @@ export class ExperimentService {
     name: string,
     description: string,
     parameters: any,
-    sampleIds: number[],
+    sampleIds: number[]
   ) {
     const newExperiment = await this.prisma.experiment.create({
       data: {
         name,
         description,
-        processStatus: 'created',
+        processStatus: "created",
         userId,
         parameters,
         samples: sampleIds,
@@ -44,7 +44,7 @@ export class ExperimentService {
       data: {
         name: `${fromExperiment.name} - Fork ${forkToExperimentsCount + 1}`,
         description: fromExperiment.description,
-        processStatus: 'created',
+        processStatus: "created",
         parameters: fromExperiment.parameters!,
         userId: fromExperiment.userId,
         samples: fromExperiment.samples!,

@@ -1,6 +1,6 @@
-import { PrismaClient, SampleOutput } from '@prisma/client';
-import jwt from 'jsonwebtoken';
-import { IApiService } from './interface';
+import { PrismaClient, SampleOutput } from "@prisma/client";
+import jwt from "jsonwebtoken";
+import { IApiService } from "./interface";
 
 export class ClipGeneratorProxy {
   constructor(private apiService: IApiService, private prisma: PrismaClient) {}
@@ -12,8 +12,8 @@ export class ClipGeneratorProxy {
       },
     });
 
-    if (experiment.processStatus !== 'created') {
-      throw new Error('Experiment is already started');
+    if (experiment.processStatus !== "created") {
+      throw new Error("Experiment is already started");
     }
 
     const sampleIds = experiment.samples as number[];
@@ -28,7 +28,7 @@ export class ClipGeneratorProxy {
           },
         })
       ).map(
-        async (sample) =>
+        async sample =>
           await this.prisma.sampleOutput.create({
             data: {
               sampleId: sample.id,
@@ -47,12 +47,12 @@ export class ClipGeneratorProxy {
         id: experiment.id,
       },
       data: {
-        processStatus: 'started',
+        processStatus: "started",
       },
     });
 
     return Promise.all(
-      sampleOutputs.map(async (sampleOutput) => {
+      sampleOutputs.map(async sampleOutput => {
         const sample = sampleOutput.sample;
         const data = sample.data as any;
         const videoFile = data.videoFile;
@@ -70,28 +70,28 @@ export class ClipGeneratorProxy {
           createdAt: new Date(),
           webhooks: {
             onNewClip: {
-              method: 'post',
+              method: "post",
               url: this.getApiUrl(
                 `/sample-output/${sampleOutput.id}/clip`,
                 sampleOutput
               ),
               params: {
-                name: 'string',
-                description: 'string',
-                tags: ['string'],
-                startTime: 'number',
-                endTime: 'number',
-                file: 'File',
+                name: "string",
+                description: "string",
+                tags: ["string"],
+                startTime: "number",
+                endTime: "number",
+                file: "File",
               },
             },
             onStatusChange: {
-              method: 'post',
+              method: "post",
               url: this.getApiUrl(
                 `/sample-output/${sampleOutput.id}/status`,
                 sampleOutput
               ),
               params: {
-                status: 'string',
+                status: "string",
               },
             },
           },
@@ -104,17 +104,17 @@ export class ClipGeneratorProxy {
     const endpoint = process.env.NEXT_PUBLIC_API_URL + path;
     const token = jwt.sign(
       {
-        iss: 'flashcast',
+        iss: "flashcast",
         id: sampleOutput.id,
         sampleId: sampleOutput.sampleId,
         experimentId: sampleOutput.experimentId,
         endpoint,
       },
       sampleOutput.jwtSecret,
-      { expiresIn: '24h' }
+      { expiresIn: "24h" }
     );
     const url = new URL(endpoint);
-    url.searchParams.append('token', token);
+    url.searchParams.append("token", token);
 
     return url.toString();
   }

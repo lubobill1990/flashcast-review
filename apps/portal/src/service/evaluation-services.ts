@@ -7,7 +7,7 @@ export class EvaluationService {
     clipId: number,
     userId: number,
     score: number,
-    comment: string,
+    comment: string
   ) {
     return this.prisma.clipEvaluation.create({
       data: {
@@ -22,16 +22,16 @@ export class EvaluationService {
   async updateClipEvaluation(
     evaluationId: number,
     score: number,
-    comment: string,
+    comment: string
   ) {
     return this.prisma.clipEvaluation.update({
       where: {
-        id: evaluationId
+        id: evaluationId,
       },
       data: {
         score,
-        comment
-      }
+        comment,
+      },
     });
   }
 
@@ -39,7 +39,7 @@ export class EvaluationService {
     sampleOutputId: number,
     userId: number,
     score: number,
-    comment: string,
+    comment: string
   ) {
     return this.prisma.sampleOutputEvaluation.create({
       data: {
@@ -47,23 +47,23 @@ export class EvaluationService {
         userId,
         score,
         comment,
-      }
+      },
     });
   }
 
   async updateSampleOutputEvaluation(
     evaluationId: number,
     score: number,
-    comment: string,
+    comment: string
   ) {
     return this.prisma.sampleOutputEvaluation.update({
       where: {
-        id: evaluationId
+        id: evaluationId,
       },
       data: {
         score,
-        comment
-      }
+        comment,
+      },
     });
   }
 }

@@ -27,24 +27,39 @@ export class SampleService {
     return user;
   }
 
-  async createSample(data: { recording: File, transcription: File, notes: string }, isPublic = true): Promise<Sample> {
+  async createSample(
+    data: { recording: File; transcription: File; notes: string },
+    isPublic = true
+  ): Promise<Sample> {
     const session = await getServerSession();
-    
+
     // find the user by email
     const user = await this.prisma.user.findFirst({
       where: {
         email: session?.user?.email || "",
       },
     });
-    
+
     if (!user) throw new Error("User not found");
 
     // upload file to cloud storage, and get back urls
-    const recordingUploadPromise = this.blobService.uploadFile(STORAGE_CONTAINER_NAME, data.recording);
-    const transcriptionUploadPromise = this.blobService.uploadFile(STORAGE_CONTAINER_NAME, data.transcription);
-    const [recordingResult, transcriptionResult] = await Promise.allSettled([recordingUploadPromise, transcriptionUploadPromise]);
+    const recordingUploadPromise = this.blobService.uploadFile(
+      STORAGE_CONTAINER_NAME,
+      data.recording
+    );
+    const transcriptionUploadPromise = this.blobService.uploadFile(
+      STORAGE_CONTAINER_NAME,
+      data.transcription
+    );
+    const [recordingResult, transcriptionResult] = await Promise.allSettled([
+      recordingUploadPromise,
+      transcriptionUploadPromise,
+    ]);
 
-    if (recordingResult.status === "rejected" || transcriptionResult.status === "rejected") {
+    if (
+      recordingResult.status === "rejected" ||
+      transcriptionResult.status === "rejected"
+    ) {
       throw new Error("Error uploading files");
     }
 
@@ -53,6 +68,7 @@ export class SampleService {
       data: {
         data: {
           recording: recordingResult.value,
+          recordingTitle: data.recording.name,
           transcription: transcriptionResult.value,
           notes: data.notes,
         },

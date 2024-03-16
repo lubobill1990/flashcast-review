@@ -2,22 +2,22 @@
  * @jest-environment node
  */
 
-import { ExperimentService } from './experiment-service';
-import { prisma } from '@/service/db';
+import { ExperimentService } from "./experiment-service";
+import { prisma } from "@/service/db";
 
-describe('ExperimentService', () => {
-  it('', async () => {
+describe("ExperimentService", () => {
+  it("", async () => {
     let user = await prisma.user.findFirst({
       where: {
-        email: 'diw@fiwe.ci',
+        email: "diw@fiwe.ci",
       },
     });
 
     if (user === null) {
       user = await prisma.user.create({
         data: {
-          email: 'diw@fiwe.ci',
-          name: 'xxfwe',
+          email: "diw@fiwe.ci",
+          name: "xxfwe",
         },
       });
     }
@@ -25,8 +25,8 @@ describe('ExperimentService', () => {
     const service = new ExperimentService(prisma);
     const exp = await service.createExperiment(
       user.id,
-      'name',
-      'description',
+      "name",
+      "description",
       {},
       []
     );
