@@ -23,17 +23,12 @@ export default async function Page() {
                 <li key={sampleOutput.id}>
                   <ReelsCollection
                     status={sampleOutput.status}
-                    clipThumnails={sampleOutput.clips.map(clip => (clip.data as ClipData)?.thumnailUrl || '')}
+                    clipThumnails={sampleOutput.clips.map(clip => (clip.data as ClipData)?.clipUrl || '')}
                     createdDate={sampleOutput.createdAt.toLocaleString()}
                     url={`/my-reels/${sampleOutput.id}`}
                   />
                 </li>
               )}
-              {/* {sampleOutputs.map((v) =>
-                <li key={v.id}>
-                  <Link href={`/my-reels/${v.id}`}>{v.id}</Link>
-                </li>
-              )} */}
             </ul>
           : <p>No reels</p>
         }
