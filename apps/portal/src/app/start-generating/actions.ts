@@ -1,6 +1,7 @@
 "use server";
 
 import factory from "@/factory";
+import { random } from "lodash-es";
 import { v4 as UUID } from "uuid";
 
 type SampleData =
@@ -37,7 +38,7 @@ export async function submit(formData: FormData) {
 
   // Mock the creation of 10 clips
   Promise.allSettled(
-    new Array(10)
+    new Array(random(3, 7))
       .fill(0)
       .map(() =>
         factory.clipService.createClip(

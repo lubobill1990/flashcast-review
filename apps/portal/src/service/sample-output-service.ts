@@ -18,6 +18,7 @@ export class SampleOutputService {
         sample: { userId },
       },
       include: {
+        sample: true,
         clips: true,
       },
     });

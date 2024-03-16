@@ -10,6 +10,7 @@ import {
   Field,
   Button,
   Divider,
+  VideoClipWandIcon,
 } from "portal-ui";
 
 export default function Page() {
@@ -60,6 +61,7 @@ export default function Page() {
                 background:
                   "linear-gradient(99.14deg, #499DFF -17.23%, #5E64FF 41.03%, #E64EFF 150.75%)",
               }}
+              icon={<VideoClipWandIcon />}
             >
               Start generating reels
             </Button>

@@ -7,6 +7,8 @@ import {
   shorthands,
 } from "@fluentui/react-components";
 import Link from "next/link";
+import { FluentIcon } from "@fluentui/react-icons/lib/fonts";
+import { VideoClipMultipleIcon, VideoClipWandIcon } from "./icons";
 
 const useStyles = makeStyles({
   header: {
@@ -18,7 +20,7 @@ const useStyles = makeStyles({
     ...shorthands.borderBottom("1px", "solid", "rgba(0, 0, 0, .1)"),
   },
   tab: {
-    ...shorthands.padding("12px", "10px"),
+    ...shorthands.padding("18px", "10px", "8px"),
   },
   activeTab: {
     fontWeight: "bold",
@@ -46,27 +48,45 @@ export const MainPageCard: React.FC<IMainPageCardProps> = ({
       }}
     >
       <div className={classes.header}>
-        <Link
+        <TabLink
           href="/start-generating"
-          className={mergeClasses(
-            classes.tab,
-            activePage === "start_generating" && classes.activeTab
-          )}
-          style={{ marginRight: "5px" }}
-        >
-          Start generating
-        </Link>
-        <Link
+          active={activePage === "start_generating"}
+          Icon={VideoClipWandIcon}
+          title={"Start generating"}
+        />
+        <TabLink
           href="/my-reels"
-          className={mergeClasses(
-            classes.tab,
-            activePage === "my_reels" && classes.activeTab
-          )}
-        >
-          My reels
-        </Link>
+          active={activePage === "my_reels"}
+          Icon={VideoClipMultipleIcon}
+          title={"My reels"}
+        />
       </div>
       <div className={classes.container}>{children}</div>
     </div>
+  );
+};
+
+const TabLink: React.FC<{
+  href: string;
+  active: boolean;
+  Icon: FluentIcon;
+  title: string;
+}> = ({ href, active, Icon, title }) => {
+  const classes = useStyles();
+  return (
+    <Link
+      href={href}
+      className={mergeClasses(classes.tab, active && classes.activeTab)}
+      style={{ marginRight: "5px" }}
+    >
+      <Icon
+        filled={active}
+        style={{
+          marginRight: "8px",
+          color: active ? "#5B5FC7" : "#424242",
+        }}
+      />
+      {title}
+    </Link>
   );
 };
