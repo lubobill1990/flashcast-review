@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import factory from "@/factory";
 
@@ -8,7 +8,7 @@ export async function getSampleOutputs() {
   const user = await factory.userService.getUser();
   return prisma.sampleOutput.findMany({
     where: {
-      sample: {userId: user.id}
-    }
+      sample: { userId: user.id },
+    },
   });
 }

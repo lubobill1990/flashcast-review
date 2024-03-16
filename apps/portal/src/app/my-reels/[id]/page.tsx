@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { sample, toInteger } from 'lodash-es';
-import Link from 'next/link';
-import { ClipEvaluation, SampleOutputEvaluation, User } from '@prisma/client';
-import { Rating, RatingProps } from '@fluentui/react-rating-preview';
-import { Field, mergeClasses, Textarea } from '@fluentui/react-components';
+import React, { useState } from "react";
+import { sample, toInteger } from "lodash-es";
+import Link from "next/link";
+import { ClipEvaluation, SampleOutputEvaluation, User } from "@prisma/client";
+import { Rating, RatingProps } from "@fluentui/react-rating-preview";
+import { Field, mergeClasses, Textarea } from "@fluentui/react-components";
 
 import {
   makeStyles,
   shorthands,
   Tab,
   TabList,
-} from '@fluentui/react-components';
+} from "@fluentui/react-components";
 
-import PlayIcon from './play.svg';
+import PlayIcon from "./play.svg";
 
 import {
   SampleOutput,
@@ -24,7 +24,7 @@ import {
   submitSampleOutputEvaluation,
   updateClipEvaluation,
   updateSampleOutputEvaluation,
-} from './actions';
+} from "./actions";
 
 type Params = {
   params: {
@@ -51,12 +51,12 @@ export default function Page({ params: { id } }: Params) {
   const fetchSampleOutput = React.useCallback(() => {
     setLoading(true);
     getUser()
-      .then((user) => {
+      .then(user => {
         setUser(user);
         return user.id;
       })
-      .then((userId) => getUserSampleOutputById(userId, sampleOutputId))
-      .then((sampleOutput) => setSampleOutput(sampleOutput))
+      .then(userId => getUserSampleOutputById(userId, sampleOutputId))
+      .then(sampleOutput => setSampleOutput(sampleOutput))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [sampleOutputId, setUser, setSampleOutput]);
@@ -98,33 +98,33 @@ const SampleOutputDetails = ({
   console.log(selectedClip, sampleOutput);
   // const clipUrl = (selectedClip.data as ClipData)?.clipUrl;
   const clipUrl =
-    'https://flashcastreview.blob.core.windows.net/samples/4691e320-2f5a-4cc2-9302-962281bfb0cd.sample.mp4';
-  const [tab, setTab] = useState('tab1');
+    "https://flashcastreview.blob.core.windows.net/samples/4691e320-2f5a-4cc2-9302-962281bfb0cd.sample.mp4";
+  const [tab, setTab] = useState("tab1");
 
   return (
     <>
-      <div className='flex'>
-        <div className='w-[30%]'>
+      <div className="flex">
+        <div className="w-[30%]">
           <video
-            className='aspect-[9/16] rounded-lg'
+            className="aspect-[9/16] rounded-lg"
             controls
             src={clipUrl}
           ></video>
         </div>
-        <div className='flex-1 ml-3 bg-[#ffffffcc] rounded-lg shadow-lg'>
-          <div className='flex p-4'>
-            <div className='flex flex-col flex-1'>
+        <div className="flex-1 ml-3 bg-[#ffffffcc] rounded-lg shadow-lg">
+          <div className="flex p-4">
+            <div className="flex flex-col flex-1">
               <h1>
-                <span className='font-bold'>
+                <span className="font-bold">
                   {sampleOutput.clips.length} Reels
-                </span>{' '}
+                </span>{" "}
                 generated from {sample.name}
               </h1>
               <div>{sampleOutput.createdAt.toLocaleDateString()}</div>
               <p>
                 {sampleOutput.sample.isPublic
-                  ? 'Generated reels is public to everyone.'
-                  : 'Generated reels are only visible to you.'}
+                  ? "Generated reels is public to everyone."
+                  : "Generated reels are only visible to you."}
               </p>
             </div>
             <div>
@@ -138,31 +138,31 @@ const SampleOutputDetails = ({
           </div>
 
           <TabList
-            className='px-4'
+            className="px-4"
             selectedValue={tab}
             onTabSelect={(e, data) => {
               console.log(e, data);
               setTab(data.value as string);
             }}
           >
-            <Tab value='tab1'>Generated reels</Tab>
-            <Tab value='tab2'>Uploaded artifacts</Tab>
+            <Tab value="tab1">Generated reels</Tab>
+            <Tab value="tab2">Uploaded artifacts</Tab>
           </TabList>
-          {tab === 'tab1' && (
+          {tab === "tab1" && (
             <div>
               <ul>
                 {sampleOutput.clips.map((clip, i) => (
                   <li
                     className={mergeClasses(
-                      selectedClip.id === clip.id && 'bg-[#E8EBFA]',
-                      'flex items-center py-2 px-4 gap-3',
-                      i !== 0 && 'border-t border-[#F0F0F0]'
+                      selectedClip.id === clip.id && "bg-[#E8EBFA]",
+                      "flex items-center py-2 px-4 gap-3",
+                      i !== 0 && "border-t border-[#F0F0F0]"
                     )}
                     key={clip.id}
                   >
                     <div>
                       <button
-                        className='w-10 h-10 flex items-center justify-center'
+                        className="w-10 h-10 flex items-center justify-center"
                         onClick={() => setSelectedClipIndex(i)}
                       >
                         <PlayIcon></PlayIcon>
@@ -170,13 +170,13 @@ const SampleOutputDetails = ({
                     </div>
                     <div>
                       <video
-                        className='w-[52px] aspect-[9/16] rounded-md'
+                        className="w-[52px] aspect-[9/16] rounded-md"
                         src={clipUrl}
                       ></video>
                     </div>
-                    <div className='flex-1'>
+                    <div className="flex-1">
                       {(clip.data as ClipData)?.clipTitle ??
-                        'Executive summary reel'}
+                        "Executive summary reel"}
                     </div>
 
                     <ClipEvaluationForm
@@ -190,7 +190,7 @@ const SampleOutputDetails = ({
               </ul>
             </div>
           )}
-          {tab === 'tab2' && <div></div>}
+          {tab === "tab2" && <div></div>}
         </div>
       </div>
     </>
@@ -210,8 +210,8 @@ function SampleOutputEvaluationForm({
   refetch,
 }: ISampleOutputEvaluationFormProps) {
   const handleSubmit = (formData: FormData) => {
-    const score = toInteger(formData.get('score') as string);
-    const comment = formData.get('comment') as string;
+    const score = toInteger(formData.get("score") as string);
+    const comment = formData.get("comment") as string;
     evaluation
       ? updateSampleOutputEvaluation(evaluation.id, score, comment)
       : (submitSampleOutputEvaluation(sampleOutputId, userId, score, comment),
@@ -219,16 +219,16 @@ function SampleOutputEvaluationForm({
   };
 
   return (
-    <form action={handleSubmit} className='flex flex-col gap-2 items-end'>
+    <form action={handleSubmit} className="flex flex-col gap-2 items-end">
       <Rating
         defaultValue={evaluation?.score}
-        name='score'
-        size='large'
+        name="score"
+        size="large"
       ></Rating>
       <Textarea
-        name='comment'
-        defaultValue={evaluation?.comment || ''}
-        placeholder='What do you like about this reel? What do you think can be improved?'
+        name="comment"
+        defaultValue={evaluation?.comment || ""}
+        placeholder="What do you like about this reel? What do you think can be improved?"
       />
     </form>
   );
@@ -247,20 +247,20 @@ function ClipEvaluationForm({
   refetch,
 }: IClipEvaluationFormProps) {
   const handleSubmit = (formData: FormData) => {
-    const score = toInteger(formData.get('score') as string);
-    const comment = formData.get('comment') as string;
+    const score = toInteger(formData.get("score") as string);
+    const comment = formData.get("comment") as string;
     evaluation
       ? updateClipEvaluation(evaluation.id, score, comment)
       : (submitClipEvaluation(clipId, userId, score, comment), refetch());
   };
   return (
-    <form action={handleSubmit} className='flex flex-col gap-2 items-end'>
+    <form action={handleSubmit} className="flex flex-col gap-2 items-end">
       <Rating
         defaultValue={evaluation?.score}
-        name='score'
-        size='large'
+        name="score"
+        size="large"
       ></Rating>
-      <Textarea name='comment' defaultValue={evaluation?.comment || ''} />
+      <Textarea name="comment" defaultValue={evaluation?.comment || ""} />
     </form>
   );
 }
