@@ -2,29 +2,17 @@
 
 import React, { useState } from "react";
 import { sample, toInteger } from "lodash-es";
-import Link from "next/link";
-import { ClipEvaluation, SampleOutputEvaluation, User } from "@prisma/client";
-import { Rating, RatingProps } from "@fluentui/react-rating-preview";
-import { Field, mergeClasses, Textarea } from "@fluentui/react-components";
+import { User } from "@prisma/client";
+import { mergeClasses } from "@fluentui/react-components";
 
-import {
-  makeStyles,
-  shorthands,
-  Tab,
-  TabList,
-} from "@fluentui/react-components";
+import { Tab, TabList } from "@fluentui/react-components";
 
 import PlayIcon from "./play.svg";
 
-import {
-  SampleOutput,
-  getUser,
-  getUserSampleOutputById,
-  submitClipEvaluation,
-  submitSampleOutputEvaluation,
-  updateClipEvaluation,
-  updateSampleOutputEvaluation,
-} from "./actions";
+import { SampleOutput, getUser, getUserSampleOutputById } from "./actions";
+import { ClipEvaluationForm } from "./clip-evaluation-form";
+import { SampleOutputEvaluationForm } from "./sample-output-evaluation-form";
+import { ExperimentTabContent } from "./experiment-tab-content";
 
 type Params = {
   params: {
@@ -75,7 +63,6 @@ export default function Page({ params: { id } }: Params) {
         <SampleOutputDetails
           sampleOutput={sampleOutput}
           user={user}
-          fetchSampleOutput={fetchSampleOutput}
         ></SampleOutputDetails>
       ) : (
         <div>Reels unavailable</div>
@@ -87,15 +74,12 @@ export default function Page({ params: { id } }: Params) {
 const SampleOutputDetails = ({
   sampleOutput,
   user,
-  fetchSampleOutput,
 }: {
   sampleOutput: SampleOutput;
   user: User;
-  fetchSampleOutput: () => void;
 }) => {
   const [selectedClipIndex, setSelectedClipIndex] = useState(0);
   const selectedClip = sampleOutput.clips[selectedClipIndex];
-  console.log(selectedClip, sampleOutput);
   // const clipUrl = (selectedClip.data as ClipData)?.clipUrl;
   const clipUrl =
     "https://flashcastreview.blob.core.windows.net/samples/4691e320-2f5a-4cc2-9302-962281bfb0cd.sample.mp4";
@@ -132,16 +116,14 @@ const SampleOutputDetails = ({
                 sampleOutputId={sampleOutput.id}
                 userId={user.id}
                 evaluation={sampleOutput.evaluations[0]}
-                refetch={fetchSampleOutput}
               />
             </div>
           </div>
 
           <TabList
-            className="px-4"
+            className="px-4 broder-b border-[#E0E0E0] border-b-2"
             selectedValue={tab}
             onTabSelect={(e, data) => {
-              console.log(e, data);
               setTab(data.value as string);
             }}
           >
@@ -183,84 +165,19 @@ const SampleOutputDetails = ({
                       clipId={clip.id}
                       userId={user.id}
                       evaluation={clip.evaluations[0]}
-                      refetch={fetchSampleOutput}
                     />
                   </li>
                 ))}
               </ul>
             </div>
           )}
-          {tab === "tab2" && <div></div>}
+          {tab === "tab2" && (
+            <ExperimentTabContent
+              sample={sampleOutput.sample}
+            ></ExperimentTabContent>
+          )}
         </div>
       </div>
     </>
   );
 };
-
-type ISampleOutputEvaluationFormProps = {
-  sampleOutputId: number;
-  userId: number;
-  evaluation?: SampleOutputEvaluation;
-  refetch: () => void;
-};
-function SampleOutputEvaluationForm({
-  sampleOutputId,
-  userId,
-  evaluation,
-  refetch,
-}: ISampleOutputEvaluationFormProps) {
-  const handleSubmit = (formData: FormData) => {
-    const score = toInteger(formData.get("score") as string);
-    const comment = formData.get("comment") as string;
-    evaluation
-      ? updateSampleOutputEvaluation(evaluation.id, score, comment)
-      : (submitSampleOutputEvaluation(sampleOutputId, userId, score, comment),
-        refetch());
-  };
-
-  return (
-    <form action={handleSubmit} className="flex flex-col gap-2 items-end">
-      <Rating
-        defaultValue={evaluation?.score}
-        name="score"
-        size="large"
-      ></Rating>
-      <Textarea
-        name="comment"
-        defaultValue={evaluation?.comment || ""}
-        placeholder="What do you like about this reel? What do you think can be improved?"
-      />
-    </form>
-  );
-}
-
-type IClipEvaluationFormProps = {
-  clipId: number;
-  userId: number;
-  evaluation?: ClipEvaluation;
-  refetch: () => void;
-};
-function ClipEvaluationForm({
-  clipId,
-  userId,
-  evaluation,
-  refetch,
-}: IClipEvaluationFormProps) {
-  const handleSubmit = (formData: FormData) => {
-    const score = toInteger(formData.get("score") as string);
-    const comment = formData.get("comment") as string;
-    evaluation
-      ? updateClipEvaluation(evaluation.id, score, comment)
-      : (submitClipEvaluation(clipId, userId, score, comment), refetch());
-  };
-  return (
-    <form action={handleSubmit} className="flex flex-col gap-2 items-end">
-      <Rating
-        defaultValue={evaluation?.score}
-        name="score"
-        size="large"
-      ></Rating>
-      <Textarea name="comment" defaultValue={evaluation?.comment || ""} />
-    </form>
-  );
-}

@@ -24,24 +24,12 @@ export async function getUserSampleOutputById(
 export async function submitSampleOutputEvaluation(
   sampleOutputId: number,
   userId: number,
-  score: number,
-  comment: string
+  score?: number,
+  comment?: string
 ) {
-  return factory.evaluationService.createSampleOutputEvaluation(
+  return factory.evaluationService.submitSampleOutputEvaluation(
     sampleOutputId,
     userId,
-    score,
-    comment
-  );
-}
-
-export async function updateSampleOutputEvaluation(
-  evaluationId: number,
-  score: number,
-  comment: string
-) {
-  return factory.evaluationService.updateSampleOutputEvaluation(
-    evaluationId,
     score,
     comment
   );
@@ -50,24 +38,12 @@ export async function updateSampleOutputEvaluation(
 export async function submitClipEvaluation(
   clipId: number,
   userId: number,
-  score: number,
-  comment: string
+  score?: number,
+  comment?: string
 ) {
-  return factory.evaluationService.createClipEvaluation(
+  return factory.evaluationService.submitClipEvaluation(
     clipId,
     userId,
-    score,
-    comment
-  );
-}
-
-export async function updateClipEvaluation(
-  evaluationId: number,
-  score: number,
-  comment: string
-) {
-  return factory.evaluationService.updateClipEvaluation(
-    evaluationId,
     score,
     comment
   );
