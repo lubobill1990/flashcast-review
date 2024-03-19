@@ -3,7 +3,7 @@ import { EvaluationService } from "@/service/evaluation-services";
 import { PrismaClient } from "@prisma/client";
 import { SampleService } from "@/service/sample-service";
 import { UserService } from "@/service/user-service";
-import { BlobService } from "@/service/blob-service";
+import { AzureBlobSASService, BlobService } from "@/service/blob-service";
 import { ExperimentService } from "@/service/experiment-service";
 import { SampleOutputService } from "@/service/sample-output-service";
 import prisma from "@/service/db";
@@ -17,6 +17,7 @@ export class ServiceFactory {
   private _sampleOutputService: SampleOutputService | undefined;
   private _clipService: ClipService | undefined;
   private _evaluationService: EvaluationService | undefined;
+  private _azureBlobSASService: any;
 
   constructor() {
     this._prismaClient = prisma;
@@ -42,7 +43,10 @@ export class ServiceFactory {
 
   get sampleService() {
     if (!this._sampleService) {
-      this._sampleService = new SampleService(this._prismaClient);
+      this._sampleService = new SampleService(
+        this._prismaClient,
+        this.AzureBlobSASService
+      );
     }
     return this._sampleService;
   }
@@ -73,6 +77,13 @@ export class ServiceFactory {
       this._evaluationService = new EvaluationService(this._prismaClient);
     }
     return this._evaluationService;
+  }
+
+  get AzureBlobSASService() {
+    if (!this._azureBlobSASService) {
+      this._azureBlobSASService = new AzureBlobSASService();
+    }
+    return this._azureBlobSASService;
   }
 }
 

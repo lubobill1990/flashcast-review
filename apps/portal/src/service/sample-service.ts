@@ -1,19 +1,14 @@
 import { PrismaClient, Sample } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { BlobService } from "./blob-service";
+import { AzureBlobSASService } from "./blob-service";
 
 const STORAGE_CONTAINER_NAME = "samples";
 
 export class SampleService {
-  constructor(private prisma: PrismaClient) {}
-
-  private _blobService: BlobService | undefined;
-  private get blobService() {
-    if (!this._blobService) {
-      this._blobService = new BlobService();
-    }
-    return this._blobService;
-  }
+  constructor(
+    private prisma: PrismaClient,
+    private azureBlobSASService: AzureBlobSASService
+  ) {}
 
   private async getUser() {
     const session = await getServerSession();
@@ -27,57 +22,28 @@ export class SampleService {
     return user;
   }
 
+  async generateSampleUrl(id: string) {
+    return this.azureBlobSASService.getBlobSASToken(STORAGE_CONTAINER_NAME, id);
+  }
+
   async createSample(
-    data: { recording: File; transcription: File; notes: string },
-    isPublic = true
-  ): Promise<Sample> {
-    const session = await getServerSession();
-
-    // find the user by email
-    const user = await this.prisma.user.findFirst({
-      where: {
-        email: session?.user?.email || "",
-      },
-    });
-
-    if (!user) throw new Error("User not found");
-
-    // upload file to cloud storage, and get back urls
-    const recordingUploadPromise = this.blobService.uploadFile(
-      STORAGE_CONTAINER_NAME,
-      data.recording
-    );
-    const transcriptionUploadPromise = this.blobService.uploadFile(
-      STORAGE_CONTAINER_NAME,
-      data.transcription
-    );
-    const [recordingResult, transcriptionResult] = await Promise.allSettled([
-      recordingUploadPromise,
-      transcriptionUploadPromise,
-    ]);
-
-    if (
-      recordingResult.status === "rejected" ||
-      transcriptionResult.status === "rejected"
-    ) {
-      throw new Error("Error uploading files");
-    }
-
-    // save the sample to the database
+    recordingUrl: string,
+    transcriptionUrl: string,
+    notes: string
+  ) {
+    const user = await this.getUser();
     const sample = await this.prisma.sample.create({
       data: {
         data: {
-          recording: recordingResult.value,
-          recordingTitle: data.recording.name,
-          transcription: transcriptionResult.value,
-          notes: data.notes,
+          recording: recordingUrl,
+          transcription: transcriptionUrl,
+          notes,
         },
-        isPublic,
-        userId: user?.id,
+        isPublic: true,
+        userId: user.id,
       },
     });
 
-    console.log(sample);
     return sample;
   }
 
