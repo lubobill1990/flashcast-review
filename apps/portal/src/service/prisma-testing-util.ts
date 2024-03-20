@@ -23,9 +23,9 @@ export class PrismaTestingUtil {
     });
   }
 
-  async createExperiment($userId?: number) {
-    if (!$userId) {
-      $userId = (await this.createUser()).id;
+  async createExperiment(userId?: number) {
+    if (!userId) {
+      userId = (await this.createUser()).id;
     }
 
     return this.prisma.experiment.create({
@@ -33,7 +33,8 @@ export class PrismaTestingUtil {
         name: "test",
         description: "test",
         processStatus: "created",
-        userId: $userId,
+        userId,
+        samples: [],
       },
     });
   }

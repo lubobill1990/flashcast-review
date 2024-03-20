@@ -31,6 +31,7 @@
     "portal-ui": "workspace:^",
     "react": "^18",
     "react-dom": "^18",
+    "sharp": "^0.33.2",
     "universal-cookie": "^7.1.0",
     "uuid": "^9.0.1"
   },

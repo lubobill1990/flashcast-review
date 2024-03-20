@@ -1,5 +1,33 @@
-version: '3'
+version: "3"
 services:
+  pyapp:
+    build: ../apps/clip-generator
+    image: flashcasteval.azurecr.io/flashcast-pyapp:v1
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1
+    volumes:
+      - ../apps/clip-generator:/app
+    networks:
+      - flashcast
+  nextapp:
+    build:
+      context: ../
+      dockerfile: ./deploy/nextapp/Dockerfile
+    image: flashcasteval.azurecr.io/flashcast-nextapp:v1
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ../apps/portal/.env.production.local:/app/apps/portal/.next/standalone/.env.local
+    networks:
+      - flashcast
   pgsql:
     image: postgres:latest
     restart: always
@@ -8,7 +36,7 @@ services:
       POSTGRES_USER: flashcast
       POSTGRES_PASSWORD: pass
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -17,7 +45,7 @@ services:
     image: redis:latest
     restart: always
     ports:
-      - '6379:6379'
+      - "6379:6379"
     volumes:
       - redisdata:/data
     networks:
