@@ -18,7 +18,7 @@
     "@radix-ui/themes": "^2.0.3",
     "@types/lodash-es": "^4.17.12",
     "@types/uuid": "^9.0.8",
-    "axios": "^1.6.7",
+    "axios": "^1.6.8",
     "jsonpath-plus": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "lodash-es": "^4.17.21",
