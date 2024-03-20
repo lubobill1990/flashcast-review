@@ -8,7 +8,6 @@ import { cookies } from "next/headers";
 import { getServerSession } from "next-auth";
 import { LoginButton } from "./login";
 import factory from "@/factory";
-import bgImg from "@/asset/bg.png";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,7 +41,7 @@ export default async function RootLayout({
       <body
         className={inter.className}
         style={{
-          backgroundImage: `url(${bgImg.src})`,
+          backgroundImage: `url(/bg.svg)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           height: "100vh",
