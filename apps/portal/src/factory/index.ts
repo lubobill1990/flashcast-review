@@ -17,7 +17,7 @@ export class ServiceFactory {
   private _sampleOutputService: SampleOutputService | undefined;
   private _clipService: ClipService | undefined;
   private _evaluationService: EvaluationService | undefined;
-  private _azureBlobSASService: any;
+  private _azureBlobSASService: AzureBlobSASService | undefined;
 
   constructor() {
     this._prismaClient = prisma;
@@ -45,7 +45,7 @@ export class ServiceFactory {
     if (!this._sampleService) {
       this._sampleService = new SampleService(
         this._prismaClient,
-        this.AzureBlobSASService
+        this.azureBlobSASService
       );
     }
     return this._sampleService;
@@ -67,7 +67,10 @@ export class ServiceFactory {
 
   get clipService() {
     if (!this._clipService) {
-      this._clipService = new ClipService(this._prismaClient);
+      this._clipService = new ClipService(
+        this._prismaClient,
+        this.azureBlobSASService
+      );
     }
     return this._clipService;
   }
@@ -79,7 +82,7 @@ export class ServiceFactory {
     return this._evaluationService;
   }
 
-  get AzureBlobSASService() {
+  get azureBlobSASService() {
     if (!this._azureBlobSASService) {
       this._azureBlobSASService = new AzureBlobSASService();
     }

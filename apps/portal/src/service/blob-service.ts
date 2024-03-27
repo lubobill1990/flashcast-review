@@ -4,6 +4,7 @@ import {
   newPipeline,
   BlobSASPermissions,
   SASProtocol,
+  ContainerSASPermissions,
 } from "@azure/storage-blob";
 import { v4 as UUID } from "uuid";
 
@@ -56,7 +57,7 @@ export class AzureBlobSASService {
     return this.blobServiceClient.getContainerClient(containerName);
   }
 
-  // get a SAS url for a blob in a container
+  // get a blob SAS url with read & write permission
   // can be used to preserve a url and let client to upload the corresponding file to the url
   async getBlobSASToken(
     containerName: string,
@@ -69,6 +70,24 @@ export class AzureBlobSASService {
     const sasPermissions = BlobSASPermissions.parse("rw");
 
     const sasUrl = await blobClient.generateSasUrl({
+      expiresOn,
+      permissions: sasPermissions,
+      protocol: SASProtocol.Https,
+    });
+
+    return sasUrl;
+  }
+
+  // get a container SAS url with read & write permission
+  async getContainerSASToken(
+    containerName: string,
+    expireSeconds = 60 * 60
+  ): Promise<string> {
+    const containerClient = this.getContainerClient(containerName);
+    const expiresOn = new Date(Date.now() + expireSeconds * 1000);
+    const sasPermissions = ContainerSASPermissions.parse("rw");
+
+    const sasUrl = await containerClient.generateSasUrl({
       expiresOn,
       permissions: sasPermissions,
       protocol: SASProtocol.Https,
