@@ -13,6 +13,7 @@
     "build": "pnpm --filter portal build",
     "start": "pnpm --filter portal start",
     "docker:up": "docker compose -f ./deploy/docker-compose.yml up",
+    "dev:docker:up": "docker compose -f ./deploy/docker-compose.yml up pgsql redis",
     "docker:down": "docker compose -f ./deploy/docker-compose.yml down",
     "db:deploy": "cd apps/portal && npx dotenv -e .env.local -e .env.development -e .env -- npx prisma migrate deploy",
     "db:generate": "cd apps/portal && npx dotenv -e .env.local -e .env.development -e .env -- npx prisma generate",
@@ -21,7 +22,9 @@
     "db:migrate:up": "cd apps/portal && npx dotenv -e .env.local -e .env.development -e .env -- npx prisma migrate deploy",
     "db:migrate": "cd apps/portal && npx dotenv -e .env.local -e .env.development -e .env -- npx prisma migrate dev --name update",
     "db:update": "pnpm db:migrate && pnpm db:generate && db:format",
-    "postinstall": "pnpm db:generate"
+    "postinstall": "pnpm db:generate",
+    "docker:build:nextapp": "docker compose -f ./deploy/docker-compose.yml build nextapp",
+    "k8s:push": "az acr push --image flashcasteval.azurecr.io/flashcasteval:v1 --registry flashcasteval"
   },
   "keywords": [],
   "author": "",
