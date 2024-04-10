@@ -6,7 +6,7 @@ import { ClipGeneratorProxy } from "./clip-generator-proxy";
 import { ApiService } from "./api-service";
 import axios from "axios";
 import { PrismaTestingUtil } from "./prisma-testing-util";
-import { prisma } from "@/service/db";
+import { prisma } from "@flashcast/db";
 
 let queueExtractJob = jest.fn();
 // mock ApiService

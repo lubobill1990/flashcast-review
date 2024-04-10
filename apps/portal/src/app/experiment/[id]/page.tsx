@@ -1,6 +1,4 @@
-import factory from "@/factory";
-
-const prisma = factory.prismaClient;
+import { prisma } from "@flashcast/db";
 
 export default async function Page({
   params: { id },

@@ -1,4 +1,4 @@
-import { PrismaClient, SampleOutput } from "@prisma/client";
+import { PrismaClient, SampleOutput } from "@flashcast/db";
 import jwt from "jsonwebtoken";
 import { IApiService } from "./interface";
 

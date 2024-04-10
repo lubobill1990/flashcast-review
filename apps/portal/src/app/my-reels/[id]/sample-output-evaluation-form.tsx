@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { SampleOutputEvaluation } from "@prisma/client";
+import { SampleOutputEvaluation } from "@flashcast/db";
 import { Rating } from "@fluentui/react-rating-preview";
 
 import {

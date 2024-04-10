@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { sample, toInteger } from "lodash-es";
-import { User } from "@prisma/client";
+import { User } from "@flashcast/db";
 import { mergeClasses } from "@fluentui/react-components";
 
 import { Tab, TabList } from "@fluentui/react-components";

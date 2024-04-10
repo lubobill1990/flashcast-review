@@ -1,4 +1,4 @@
-import { Experiment, Sample } from "@prisma/client";
+import { Experiment, Sample } from "@flashcast/db";
 import { Textarea } from "@fluentui/react-components";
 
 export const ExperimentTabContent: React.FC<{ sample: Sample }> = ({

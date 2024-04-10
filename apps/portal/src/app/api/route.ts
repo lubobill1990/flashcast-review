@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import factory from "@/factory";
-
-const prisma = factory.prismaClient;
+import { prisma } from "@flashcast/db";
 
 export async function GET(_req: NextRequest) {
   const session = await getServerSession();

@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { ClipEvaluation } from "@prisma/client";
+import { ClipEvaluation } from "@flashcast/db";
 import { Rating } from "@fluentui/react-rating-preview";
 import {
   Button,

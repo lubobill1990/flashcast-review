@@ -12,7 +12,7 @@ ALTER TABLE "SampleOnExperiment" DROP CONSTRAINT "SampleOnExperiment_experimentI
 ALTER TABLE "SampleOnExperiment" DROP CONSTRAINT "SampleOnExperiment_sampleId_fkey";
 
 -- AlterTable
-ALTER TABLE "Experiment" ADD COLUMN     "samples" JSONB NOT NULL;
+ALTER TABLE "Experiment" ADD COLUMN     "samples" JSONB NOT NULL DEFAULT '[]';
 
 -- DropTable
 DROP TABLE "SampleOnExperiment";

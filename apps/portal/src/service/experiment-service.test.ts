@@ -3,7 +3,7 @@
  */
 
 import { ExperimentService } from "./experiment-service";
-import { prisma } from "@/service/db";
+import { prisma } from "@flashcast/db";
 
 describe("ExperimentService", () => {
   it("", async () => {

@@ -1,4 +1,4 @@
-import { PrismaClient, Sample } from "@prisma/client";
+import { PrismaClient, Sample } from "@flashcast/db";
 
 export class ExperimentService {
   constructor(private prisma: PrismaClient) {}

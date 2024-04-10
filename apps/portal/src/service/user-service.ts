@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, User } from "@flashcast/db";
 import { getServerSession } from "next-auth";
 
 export class UserService {

@@ -1,4 +1,4 @@
-import { PrismaClient, Sample } from "@prisma/client";
+import { PrismaClient, Sample } from "@flashcast/db";
 import { getServerSession } from "next-auth";
 import { AzureBlobSASService } from "./blob-service";
 

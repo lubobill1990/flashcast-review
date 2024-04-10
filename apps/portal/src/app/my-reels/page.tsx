@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Branding from "../branding";
 import factory from "@/factory";
 import { Divider, MainPageCard, ReelsCollection } from "portal-ui";

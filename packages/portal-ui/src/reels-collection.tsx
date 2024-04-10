@@ -1,5 +1,3 @@
-"use client";
-
 import { Button, Tag } from "@fluentui/react-components";
 // import {} from '@fluentui/react-icons';
 import Link from "next/link";
@@ -12,7 +10,9 @@ interface IReelsCollectionProps extends React.PropsWithChildren {
   createdDate: string;
   url: string;
 }
-export const ReelsCollection: React.FC<IReelsCollectionProps> = ({
+export const ReelsCollection: React.FC<React.PropsWithChildren<{
+  sampleOutput: SampleOutput;
+}>> = ({
   status,
   title,
   clipThumnails,

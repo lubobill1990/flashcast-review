@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@flashcast/db";
 import { v4 } from "uuid";
 
 export class PrismaTestingUtil {

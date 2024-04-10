@@ -38,7 +38,7 @@ model Experiment {
   parameters           Json           @default("{}")
   processStatus        String
   processStatusHistory Json           @default("[]")
-  samples              Json
+  samples              Json           @default("[]")
   userId               Int
   user                 User           @relation(fields: [userId], references: [id])
   isReadyForEvaluation Boolean        @default(false)

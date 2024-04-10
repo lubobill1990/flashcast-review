@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@flashcast/db";
 import { AzureBlobSASService } from "./blob-service";
 
 const STORAGE_CONTAINER_NAME = "clips";

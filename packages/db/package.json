@@ -1,0 +1,22 @@
+{
+  "name": "@flashcast/db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "prisma": "dotenv -e ../../apps/portal/.env.local -e ../../apps/portal/.env.development -e ../../apps/portal/.env prisma",
+    "prisma:migrate": "npm run prisma migrate dev",
+    "prisma:generate": "npm run prisma generate",
+    "prisma:deploy": "npm run prisma migrate deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.12.1"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.4.1",
+    "prisma": "^5.12.1"
+  }
+}

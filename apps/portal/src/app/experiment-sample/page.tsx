@@ -1,6 +1,5 @@
-import factory from '@/factory';
+import { prisma } from "@flashcast/db";
 
-const prisma = factory.prismaClient;
 
 export default async function Page() {
   const experiments = await prisma.experiment.findMany();

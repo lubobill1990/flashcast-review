@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSampleOutputOrThrow } from '../sample-output-api-util';
-import factory from '@/factory';
-
-const prisma = factory.prismaClient;
+import { prisma } from "@flashcast/db";
 
 export async function POST(
   req: NextRequest,

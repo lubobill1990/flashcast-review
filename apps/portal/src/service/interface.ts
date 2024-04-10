@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { User } from "@flashcast/db";
 
 export interface IUserService {
   getUser(): Promise<User | null>;
