@@ -63,36 +63,50 @@ export class AzureBlobSASService {
     containerName: string,
     blobName: string,
     expireSeconds = 60 * 60
-  ): Promise<string> {
+  ): Promise<{
+    blobUrl: string;
+    sasUrl: string;
+  }> {
     const containerClient = this.getContainerClient(containerName);
     const blobClient = containerClient.getBlobClient(blobName);
     const expiresOn = new Date(Date.now() + expireSeconds * 1000);
     const sasPermissions = BlobSASPermissions.parse("rw");
 
+    const blobUrl = blobClient.url;
     const sasUrl = await blobClient.generateSasUrl({
       expiresOn,
       permissions: sasPermissions,
       protocol: SASProtocol.Https,
     });
 
-    return sasUrl;
+    return {
+      blobUrl,
+      sasUrl,
+    };
   }
 
   // get a container SAS url with read & write permission
   async getContainerSASToken(
     containerName: string,
     expireSeconds = 60 * 60
-  ): Promise<string> {
+  ): Promise<{
+    containerUrl: string;
+    sasUrl: string;
+  }> {
     const containerClient = this.getContainerClient(containerName);
     const expiresOn = new Date(Date.now() + expireSeconds * 1000);
     const sasPermissions = ContainerSASPermissions.parse("rw");
 
+    const containerUrl = containerClient.url;
     const sasUrl = await containerClient.generateSasUrl({
       expiresOn,
       permissions: sasPermissions,
       protocol: SASProtocol.Https,
     });
 
-    return sasUrl;
+    return {
+      containerUrl,
+      sasUrl,
+    };
   }
 }

@@ -13,40 +13,26 @@ type SampleData =
   | null
   | undefined;
 
-async function upload(url: string, file: File) {
-  return await fetch(url, {
-    method: "PUT",
-    body: file,
-    headers: {
-      "x-ms-blob-type": "BlockBlob",
-      "Content-Type": file.type,
-    },
-  });
-}
-
 const getBlobId = (file: File) => UUID() + "." + file.name;
 
-export async function submit(formData: FormData) {
+export async function getUploadUrl(file: File) {
+  const { blobUrl, sasUrl } = await factory.sampleService.generateSampleUrl(
+    getBlobId(file)
+  );
+  return { blobUrl, sasUrl };
+}
+
+export async function submit(
+  recordingUrl: string,
+  transcriptionUrl: string,
+  notes: string
+) {
   const user = await factory.userService.getUser();
-  const recording = formData.get("recording") as File;
-  const transcription = formData.get("transcription") as File;
-  const notes = formData.get("notes") as string;
 
-  const recordingUrl = await factory.sampleService.generateSampleUrl(
-    getBlobId(recording)
-  );
-  const transcriptionUrl = await factory.sampleService.generateSampleUrl(
-    getBlobId(transcription)
-  );
-
-  const uploadRecordingPromise = upload(recordingUrl, recording);
-  const uploadTranscriptionPromise = upload(transcriptionUrl, transcription);
-
-  const sample = await Promise.allSettled([
-    uploadRecordingPromise,
-    uploadTranscriptionPromise,
-  ]).then(() =>
-    factory.sampleService.createSample(recordingUrl, transcriptionUrl, notes)
+  const sample = await factory.sampleService.createSample(
+    recordingUrl,
+    transcriptionUrl,
+    notes
   );
 
   const experiment = await factory.experimentService.createExperiment(

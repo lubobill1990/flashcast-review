@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { submit } from "./actions";
+import { submit, getUploadUrl } from "./actions";
 import Branding from "../branding";
 import {
   MainPageCard,
@@ -13,11 +13,38 @@ import {
   VideoClipWandIcon,
 } from "portal-ui";
 
+async function upload(url: string, file: File) {
+  return await fetch(url, {
+    method: "PUT",
+    body: file,
+    headers: {
+      "x-ms-blob-type": "BlockBlob",
+      "Content-Type": file.type,
+    },
+  });
+}
+
 export default function Page() {
   const router = useRouter();
 
-  const handleSubmit = (formData: FormData) => {
-    submit(formData).then(id => router.push(`/my-reels/${id}`));
+  const handleSubmit = async (formData: FormData) => {
+    const recording = formData.get("recording") as File;
+    const transcription = formData.get("transcription") as File;
+    const notes = formData.get("notes") as string;
+
+    const { blobUrl: recordingUrl, sasUrl: recordingSASUrl } =
+      await getUploadUrl(recording);
+    const { blobUrl: transcriptionUrl, sasUrl: transcriptionSASUrl } =
+      await getUploadUrl(transcription);
+
+    await Promise.allSettled([
+      upload(recordingSASUrl, recording),
+      upload(transcriptionSASUrl, transcription),
+    ]);
+
+    submit(recordingUrl, transcriptionUrl, notes).then(id =>
+      router.push(`/my-reels/${id}`)
+    );
   };
 
   return (
