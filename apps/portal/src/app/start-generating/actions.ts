@@ -13,11 +13,11 @@ type SampleData =
   | null
   | undefined;
 
-const getBlobId = (file: File) => UUID() + "." + file.name;
+const getBlobId = (blobName: string) => UUID() + "." + blobName;
 
-export async function getUploadUrl(file: File) {
+export async function getUploadUrl(fileName: string) {
   const { blobUrl, sasUrl } = await factory.sampleService.generateSampleUrl(
-    getBlobId(file)
+    getBlobId(fileName)
   );
   return { blobUrl, sasUrl };
 }

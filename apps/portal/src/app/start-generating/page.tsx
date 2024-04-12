@@ -33,18 +33,17 @@ export default function Page() {
     const notes = formData.get("notes") as string;
 
     const { blobUrl: recordingUrl, sasUrl: recordingSASUrl } =
-      await getUploadUrl(recording);
+      await getUploadUrl(recording.name);
     const { blobUrl: transcriptionUrl, sasUrl: transcriptionSASUrl } =
-      await getUploadUrl(transcription);
+      await getUploadUrl(transcription.name);
 
     await Promise.allSettled([
       upload(recordingSASUrl, recording),
       upload(transcriptionSASUrl, transcription),
     ]);
 
-    submit(recordingUrl, transcriptionUrl, notes).then(id =>
-      router.push(`/my-reels/${id}`)
-    );
+    const id = await submit(recordingUrl, transcriptionUrl, notes);
+    router.push(`/my-reels/${id}`);
   };
 
   return (
