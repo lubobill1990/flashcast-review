@@ -1,35 +1,17 @@
-"use client";
-
+import Image from "next/image";
 import { AuthButton } from "./auth-buttons";
 
-import { makeStyles, shorthands } from "@fluentui/react-components";
-import Logo from "./logo.svg";
-
-const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    justifyContent: "space-between",
-    height: "40px",
-    paddingLeft: "20px",
-    paddingRight: "20px",
-    ...shorthands.gap("20px"),
-    backgroundColor: "#fff",
-    "& a, & button": {
-      ...shorthands.padding("4px"),
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      height: "100%",
-    },
-  },
-});
-
 export const NavBar = () => {
-  const classes = useStyles();
   return (
-    <nav className={classes.root}>
+    <nav className="flex justify-between h-[40px] px-5 gap-5 bg-white">
       <a href="/" className="flex items-center text-sm font-bold">
-        <Logo className="mr-2" />
+        <Image
+          src="/logo.svg"
+          height={24}
+          alt="logo"
+          width={40}
+          className="mr-2"
+        />
         FlashCast Reels Portal
       </a>
       {/* <ul className='flex-1 flex gap-3'>
@@ -52,11 +34,9 @@ export const NavBar = () => {
           </a>
         </li>
       </ul> */}
-      <ul className="flex gap-3">
-        <li>
-          <AuthButton />
-        </li>
-      </ul>
+      <div className="flex items-center gap-3">
+        <AuthButton />
+      </div>
     </nav>
   );
 };

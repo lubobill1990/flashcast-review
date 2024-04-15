@@ -9,15 +9,20 @@ import { prisma } from "@flashcast/db";
 export const config = {
   adapter: PrismaAdapter(prisma),
   trustHost: true,
+  debug: true,
   theme: {
-    logo: "/icon/logo-sm.png",
+    logo: "/logo.svg",
   },
   providers: [
     // GitHub,
-    AzureAAD,
+    AzureAAD({
+      clientId: process.env.AZURE_AD_CLIENT_ID,
+      clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
+      tenantId: process.env.AZURE_AD_TENANT_ID,
+    }),
   ],
   basePath: "/auth",
-  // session: { strategy: "jwt" },
+  session: { strategy: "jwt" },
   // pages: {
   //   signIn: "/login",
   // },

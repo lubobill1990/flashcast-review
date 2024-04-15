@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Tag } from "@fluentui/react-components";
 // import {} from '@fluentui/react-icons';
 import Link from "next/link";
@@ -10,15 +12,11 @@ interface IReelsCollectionProps extends React.PropsWithChildren {
   createdDate: string;
   url: string;
 }
-export const ReelsCollection: React.FC<React.PropsWithChildren<{
-  sampleOutput: SampleOutput;
-}>> = ({
-  status,
-  title,
-  clipThumnails,
-  createdDate,
-  url,
-}) => {
+export const ReelsCollection: React.FC<
+  React.PropsWithChildren<{
+    sampleOutput: SampleOutput;
+  }>
+> = ({ status, title, clipThumnails, createdDate, url }) => {
   const clipUrl =
     "https://flashcastreview.blob.core.windows.net/samples/4691e320-2f5a-4cc2-9302-962281bfb0cd.sample.mp4";
   return (

@@ -6,7 +6,7 @@ import { NavBar } from "portal-ui";
 // import { ThemeSwitch } from './theme-switch';
 import { cookies } from "next/headers";
 import { auth } from "@flashcast/auth";
-import { LoginButton } from "./login";
+import { LoginButton } from "portal-ui";
 import factory from "@/factory";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -48,7 +48,7 @@ export default async function RootLayout({
         }}
       >
         {session?.user && (
-          <Providers session={session}>
+          <Providers>
             <NavBar></NavBar>
             <div className="container mx-auto py-16 px-2">{children}</div>
             <footer className="flex">

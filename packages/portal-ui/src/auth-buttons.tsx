@@ -1,27 +1,44 @@
-"use client";
+"use server";
 
-import { useSession } from "next-auth/react";
-import { signIn, signOut } from "next-auth/react";
+import { auth, signIn, signOut } from "@flashcast/auth";
 
-export function LoginButton() {
+export async function LoginButton() {
   return (
-    <button onClick={() => signIn("microsoft")}>Sign in with Microsoft</button>
+    <form
+      action={async () => {
+        "use server";
+        await signIn("azure-ad");
+      }}
+    >
+      <button type="submit">Signin with Microsoft account</button>
+    </form>
   );
 }
 
-export function LogoutButton() {
-  return <button onClick={() => signOut()}>Sign out</button>;
+export async function LogoutButton() {
+  return (
+    <form
+      action={async () => {
+        "use server";
+        await signOut({
+          redirectTo: "/",
+        });
+      }}
+    >
+      <button type="submit">Logout</button>
+    </form>
+  );
 }
 
-export function AuthButton() {
-  const { data: session, status } = useSession();
+export async function AuthButton() {
+  const session = await auth();
 
   return (
     <>
       {!session && <LoginButton />}
       {session && (
-        <div className="flex gap-2 h-full">
-          <p className="flex items-center">Signed in as {session.user?.name}</p>
+        <div className="flex gap-2">
+          <p>Signed in as {session.user?.name}</p>
           <LogoutButton />
         </div>
       )}
