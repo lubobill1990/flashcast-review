@@ -1,5 +1,5 @@
 import { PrismaClient, User } from "@flashcast/db";
-import { getServerSession } from "next-auth";
+import { auth } from "@flashcast/auth";
 
 export class UserService {
   constructor(private prisma: PrismaClient) {}
@@ -18,7 +18,7 @@ export class UserService {
   }
 
   async getUser() {
-    const userEmail = await getServerSession().then(
+    const userEmail = await auth().then(
       session => session?.user?.email
     );
     if (!userEmail) throw new Error("User not found in session");

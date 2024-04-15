@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 import { NavBar } from "portal-ui";
 // import { ThemeSwitch } from './theme-switch';
 import { cookies } from "next/headers";
-import { getServerSession } from "next-auth";
+import { auth } from "@flashcast/auth";
 import { LoginButton } from "./login";
 import factory from "@/factory";
 
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 async function init() {
-  const session = await getServerSession();
+  const session = await auth();
   if (session?.user) {
     const user = await factory.userService.createUser(
       session.user.name ?? "",

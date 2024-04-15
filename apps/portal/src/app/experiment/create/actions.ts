@@ -1,9 +1,9 @@
 'use server';
 
-import { getServerSession } from 'next-auth';
+import { auth } from "@flashcast/auth";
 
 export async function submit(_currentState: unknown, formData: FormData) {
-  const session = await getServerSession();
+  const session = await auth();
   console.log({
     session,
     _currentState,

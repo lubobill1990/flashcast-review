@@ -1,5 +1,5 @@
 import { PrismaClient, Sample } from "@flashcast/db";
-import { getServerSession } from "next-auth";
+import { auth } from "@flashcast/auth";
 import { AzureBlobSASService } from "./blob-service";
 
 const STORAGE_CONTAINER_NAME = "samples";
@@ -11,7 +11,7 @@ export class SampleService {
   ) {}
 
   private async getUser() {
-    const session = await getServerSession();
+    const session = await auth();
     const user = await this.prisma.user.findFirst({
       where: {
         email: session?.user?.email || "",
