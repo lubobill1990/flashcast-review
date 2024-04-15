@@ -180,6 +180,9 @@ importers:
       '@flashcast/auth':
         specifier: workspace:^
         version: link:../auth
+      '@flashcast/db':
+        specifier: workspace:^
+        version: link:../db
       '@fluentui/react-components':
         specifier: ^9.46.8
         version: 9.46.8(@types/react-dom@18.2.21)(@types/react@18.2.64)(react-dom@18.2.0)(react@18.2.0)(scheduler@0.23.0)

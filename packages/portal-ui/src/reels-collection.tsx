@@ -1,24 +1,39 @@
 "use client";
 
 import { Button, Tag } from "@fluentui/react-components";
-// import {} from '@fluentui/react-icons';
 import Link from "next/link";
 import React from "react";
+import { Clip, Sample, SampleOutput } from "@flashcast/db";
 
-interface IReelsCollectionProps extends React.PropsWithChildren {
-  status: string;
-  title: string;
-  clipThumnails: string[];
-  createdDate: string;
-  url: string;
-}
-export const ReelsCollection: React.FC<
-  React.PropsWithChildren<{
-    sampleOutput: SampleOutput;
-  }>
-> = ({ status, title, clipThumnails, createdDate, url }) => {
-  const clipUrl =
-    "https://flashcastreview.blob.core.windows.net/samples/4691e320-2f5a-4cc2-9302-962281bfb0cd.sample.mp4";
+type ClipData =
+  | {
+      clipUrl?: string;
+      thumnailUrl?: string;
+    }
+  | null
+  | undefined;
+
+type SampleData =
+  | {
+      recordingTitle: string;
+    }
+  | null
+  | undefined;
+
+export const ReelsCollection: React.FC<{
+  sampleOutput: SampleOutput;
+  sample: Sample;
+  clips: Clip[];
+}> = ({ sampleOutput, sample, clips }) => {
+  const status = sampleOutput.status;
+  const title = (sample.data as SampleData)?.recordingTitle || "";
+
+  const clipThumnails = clips.map(
+    clip => (clip.data as ClipData)?.clipUrl || ""
+  );
+  const createdDate = sampleOutput.createdAt.toLocaleString();
+  const url = `/my-reels/${sampleOutput.id}`;
+
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -46,7 +61,7 @@ export const ReelsCollection: React.FC<
       </div>
       <div>
         <ul>
-          {clipThumnails.map(_ => (
+          {clipThumnails.map(clipUrl => (
             <li key={clipUrl} style={{ float: "left", marginRight: "8px" }}>
               <video
                 className="w-[60px] aspect-[9/16] rounded-md"

@@ -1,6 +1,7 @@
 "use server";
 
 import { auth, signIn, signOut } from "@flashcast/auth";
+import Image from "next/image";
 
 export async function LoginButton() {
   return (
@@ -10,7 +11,7 @@ export async function LoginButton() {
         await signIn("azure-ad");
       }}
     >
-      <button type="submit">Signin with Microsoft account</button>
+      <button type="submit">Sign in with Microsoft account</button>
     </form>
   );
 }
@@ -25,21 +26,28 @@ export async function LogoutButton() {
         });
       }}
     >
-      <button type="submit">Logout</button>
+      <button type="submit">Log out</button>
     </form>
   );
 }
 
 export async function AuthButton() {
   const session = await auth();
-
   return (
     <>
       {!session && <LoginButton />}
       {session && (
-        <div className="flex gap-2">
-          <p>Signed in as {session.user?.name}</p>
-          <LogoutButton />
+        <div className="flex gap-2 items-center">
+          {session.user?.image && (
+            <Image
+              src={session.user?.image}
+              width={30}
+              height={30}
+              alt="avatar"
+              className="rounded-full"
+            ></Image>
+          )}
+          {session.user?.name} <LogoutButton />
         </div>
       )}
     </>

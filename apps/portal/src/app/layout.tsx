@@ -16,25 +16,13 @@ export const metadata: Metadata = {
   description: "To evaluate the clip generation quality.",
 };
 
-async function init() {
-  const session = await auth();
-  if (session?.user) {
-    const user = await factory.userService.createUser(
-      session.user.name ?? "",
-      session.user.email ?? ""
-    );
-    console.log(user);
-  }
-  return session;
-}
-
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const theme: string = cookies().get("next-theme")?.value ?? "light";
-  const session = await init();
+  const session = await auth();
 
   return (
     <html lang="en" className={theme} style={{ colorScheme: theme }}>
