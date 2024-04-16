@@ -23,20 +23,18 @@ import { submitSampleOutputEvaluation } from "./actions";
 
 type ISampleOutputEvaluationFormProps = {
   sampleOutputId: number;
-  userId: number;
   evaluation?: SampleOutputEvaluation;
 };
 
 export function SampleOutputEvaluationForm({
   sampleOutputId,
-  userId,
   evaluation,
 }: ISampleOutputEvaluationFormProps) {
   const submitEvaluation = useCallback(
     (score?: number, comment?: string) => {
-      submitSampleOutputEvaluation(sampleOutputId, userId, score, comment);
+      submitSampleOutputEvaluation(sampleOutputId, score, comment);
     },
-    [sampleOutputId, userId]
+    [sampleOutputId]
   );
   const [comment, setComment] = React.useState<string>();
   const [open, setOpen] = React.useState(false);

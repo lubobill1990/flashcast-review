@@ -23,19 +23,17 @@ import { submitClipEvaluation } from "./actions";
 
 type IClipEvaluationFormProps = {
   clipId: number;
-  userId: number;
   evaluation?: ClipEvaluation;
 };
 export function ClipEvaluationForm({
   clipId,
-  userId,
   evaluation,
 }: IClipEvaluationFormProps) {
   const submitEvaluation = useCallback(
     (score?: number, comment?: string) => {
-      submitClipEvaluation(clipId, userId, score, comment);
+      submitClipEvaluation(clipId, score, comment);
     },
-    [clipId, userId]
+    [clipId]
   );
   const [comment, setComment] = React.useState<string>();
   const [open, setOpen] = React.useState(false);

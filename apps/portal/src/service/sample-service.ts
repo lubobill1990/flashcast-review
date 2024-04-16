@@ -22,8 +22,8 @@ export class SampleService {
     return user;
   }
 
-  async generateSampleUrl(id: string) {
-    return this.azureBlobSASService.getBlobSASToken(STORAGE_CONTAINER_NAME, id);
+  async generateSampleUrl(containerName: string, id: string) {
+    return this.azureBlobSASService.getBlobSASToken(containerName, id);
   }
 
   async createSample(

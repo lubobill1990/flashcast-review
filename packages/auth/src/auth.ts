@@ -32,12 +32,18 @@ export const config = {
       if (pathname === "/middleware-example") return !!auth;
       return true;
     },
-    jwt({ token, trigger, session }) {
+    async jwt({ token, trigger, session }) {
       if (trigger === "update") token.name = session.user.name;
       return token;
     },
     async session({ session, token }) {
-      return session;
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub as string,
+        },
+      };
     },
   },
   secret: process.env.AUTH_SECRET,

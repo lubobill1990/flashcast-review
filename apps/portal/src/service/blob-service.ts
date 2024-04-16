@@ -5,6 +5,7 @@ import {
   BlobSASPermissions,
   SASProtocol,
   ContainerSASPermissions,
+  generateBlobSASQueryParameters,
 } from "@azure/storage-blob";
 import { v4 as UUID } from "uuid";
 
@@ -53,8 +54,13 @@ export class AzureBlobSASService {
     );
   }
 
-  private getContainerClient(containerName: string) {
-    return this.blobServiceClient.getContainerClient(containerName);
+  private async getContainerClient(containerName: string) {
+    const containerClient =
+      this.blobServiceClient.getContainerClient(containerName);
+    if (!(await containerClient.exists())) {
+      await containerClient.create();
+    }
+    return containerClient;
   }
 
   // get a blob SAS url with read & write permission
@@ -67,7 +73,7 @@ export class AzureBlobSASService {
     blobUrl: string;
     sasUrl: string;
   }> {
-    const containerClient = this.getContainerClient(containerName);
+    const containerClient = await this.getContainerClient(containerName);
     const blobClient = containerClient.getBlobClient(blobName);
     const expiresOn = new Date(Date.now() + expireSeconds * 1000);
     const sasPermissions = BlobSASPermissions.parse("rw");
@@ -93,7 +99,7 @@ export class AzureBlobSASService {
     containerUrl: string;
     sasUrl: string;
   }> {
-    const containerClient = this.getContainerClient(containerName);
+    const containerClient = await this.getContainerClient(containerName);
     const expiresOn = new Date(Date.now() + expireSeconds * 1000);
     const sasPermissions = ContainerSASPermissions.parse("rw");
 
@@ -108,5 +114,37 @@ export class AzureBlobSASService {
       containerUrl,
       sasUrl,
     };
+  }
+  
+  generateReadOnlySasUrl(storageUrl: string) {
+    const url = new URL(storageUrl);
+    const pathParts = url.pathname.split("/");
+    const containerName = pathParts[1];
+    const blobName = pathParts.slice(2).join("/");
+
+    // Define SAS permissions for the blob
+    // In this case, 'r' indicates read permissions
+    const permissions = BlobSASPermissions.parse("r");
+
+    // Define the SAS token's expiration time
+    const expiresOn = new Date(new Date().valueOf() + 3600 * 1000); // 1 hour from now
+
+    // Generate the SAS token
+    const sasToken = generateBlobSASQueryParameters(
+      {
+        containerName,
+        blobName,
+        permissions,
+        expiresOn,
+      },
+      this.sharedKeyCredential
+    ).toString();
+
+    // Construct the full URL with the SAS token
+    const blobUrl = this.blobServiceClient
+      .getContainerClient(containerName)
+      .getBlobClient(blobName).url;
+
+    return `${blobUrl}?${sasToken}`;
   }
 }

@@ -1,5 +1,6 @@
 import { PrismaClient, User } from "@flashcast/db";
 import { auth } from "@flashcast/auth";
+import { toInteger } from "lodash-es";
 
 export class UserService {
   constructor(private prisma: PrismaClient) {}
@@ -18,14 +19,17 @@ export class UserService {
   }
 
   async getUser() {
-    const userEmail = await auth().then(
-      session => session?.user?.email
-    );
-    if (!userEmail) throw new Error("User not found in session");
-
-    const user = await this.getUserByEmail(userEmail);
-    if (!user) throw new Error("User not found");
-    console.log("getUser", user);
+    const session = await auth();
+    const id = session?.user?.id;
+    if (!id) throw new Error("Session not found");
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: toInteger(id),
+      },
+    });
+    if (!user) {
+      throw new Error("User not found");
+    }
     return user;
   }
 

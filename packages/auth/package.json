@@ -7,9 +7,13 @@
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",
     "@flashcast/db": "workspace:^",
+    "lodash-es": "^4.17.21",
     "next-auth": "5.0.0-beta.16"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12"
+  }
 }
