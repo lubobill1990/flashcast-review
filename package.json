@@ -24,8 +24,7 @@
     "db:migrate": "pnpm --filter db prisma migrate dev --name update",
     "db:update": "pnpm db:migrate && pnpm db:generate && db:format",
     "postinstallx": "pnpm db:generate",
-    "docker:build:nextapp": "docker compose -f ./deploy/docker-compose.yml build nextapp",
-    "k8s:push": "az acr push --image flashcasteval.azurecr.io/flashcasteval:v1 --registry flashcasteval"
+    "build:nextapp": "docker compose -f ./deploy/docker-compose.yml build nextapp"
   },
   "keywords": [],
   "author": "",
