@@ -94,13 +94,16 @@ export class ClipGeneratorProxy {
         60 * 60 * 24 * 7
       );
 
+    // append "{0}" to the pathname of the containerRWSasUrl, while keeping the query string
+    const url = new URL(containerRWSasUrl);
+
     const data = {
       recording,
       transcript,
       extra_prompt: aiNotes,
       webhooks: {
         onNewFile: {
-          url: containerRWSasUrl,
+          url: `${url.origin}${url.pathname}/{0}${url.search}`,
         },
         onStatusChange: {
           url: this.getApiUrl(
