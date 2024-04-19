@@ -1,7 +1,6 @@
 "use client";
 
 import React, { FC, useState } from "react";
-import { Clip, Sample, SampleOutputEvaluation } from "@flashcast/db";
 import { mergeClasses } from "@fluentui/react-components";
 
 import { Tab, TabList } from "@fluentui/react-components";
@@ -13,32 +12,28 @@ import { ClipEvaluationForm } from "./clip-evaluation-form";
 import { SampleOutputEvaluationForm } from "./sample-output-evaluation-form";
 import { ExperimentTabContent } from "./experiment-tab-content";
 
-type ClipData =
-  | {
-      clipUrl?: string;
-      clipTitle?: string;
-    }
-  | undefined;
-
 export const SampleOutputDetails: FC<{
   sampleOutput: SampleOutput;
 }> = ({ sampleOutput }) => {
-  const { clips, sample, evaluations } = sampleOutput;
+  const { sample } = sampleOutput;
   const [selectedClipIndex, setSelectedClipIndex] = useState(0);
   const selectedClip = sampleOutput.clips[selectedClipIndex];
-  const clipUrl = (sample.data as any).recording;
+  const clipVideoUrl = selectedClip?.videoUrl;
+
   const [tab, setTab] = useState("tab1");
 
   return (
     <>
       <div className="flex">
-        <div className="w-[30%]">
-          <video
-            className="aspect-[9/16] rounded-lg"
-            controls
-            src={clipUrl}
-          ></video>
-        </div>
+        {clipVideoUrl && (
+          <div className="w-[30%]">
+            <video
+              className="aspect-[9/16] rounded-lg"
+              controls
+              src={clipVideoUrl}
+            ></video>
+          </div>
+        )}
         <div className="flex-1 ml-3 bg-[#ffffffcc] rounded-lg shadow-lg">
           <div className="flex p-4">
             <div className="flex flex-col flex-1">
@@ -96,12 +91,11 @@ export const SampleOutputDetails: FC<{
                     <div>
                       <video
                         className="w-[52px] aspect-[9/16] rounded-md"
-                        src={(clip.data as any).clipUrl}
+                        src={clip.videoUrl}
                       ></video>
                     </div>
                     <div className="flex-1">
-                      {(clip.data as ClipData)?.clipTitle ??
-                        "Executive summary reel"}
+                      {clip.headline ?? "Executive summary reel"}
                     </div>
 
                     <ClipEvaluationForm
@@ -110,6 +104,9 @@ export const SampleOutputDetails: FC<{
                     />
                   </li>
                 ))}
+                {sampleOutput.clips.length === 0 && (
+                  <div className="p-6">Generating...</div>
+                )}
               </ul>
             </div>
           )}

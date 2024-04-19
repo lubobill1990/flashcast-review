@@ -29,18 +29,18 @@ export class SampleService {
   async createSample(
     recordingUrl: string,
     transcriptionUrl: string,
-    notes: string
+    aiNotes: string
   ) {
     const user = await this.getUser();
     const sample = await this.prisma.sample.create({
       data: {
         data: {
-          recording: recordingUrl,
-          transcription: transcriptionUrl,
-          notes,
+          aiNotes,
         },
         isPublic: true,
         userId: user.id,
+        recordingVideoUrl: recordingUrl,
+        transcriptionFileUrl: transcriptionUrl,
       },
     });
 

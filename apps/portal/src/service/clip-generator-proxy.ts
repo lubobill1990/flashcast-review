@@ -1,14 +1,17 @@
-import { PrismaClient, SampleOutput } from "@flashcast/db";
+import { PrismaClient, Sample, SampleOutput } from "@flashcast/db";
 import jwt from "jsonwebtoken";
-import { IApiService } from "./interface";
+import factory from "@/factory";
+import axios from "axios";
+
+const clipGeneratorApiUrl = process.env.CLIP_GENERATOR_API_URL as string;
 
 export class ClipGeneratorProxy {
-  constructor(private apiService: IApiService, private prisma: PrismaClient) {}
+  constructor(private prisma: PrismaClient) {}
 
-  async startExperiment($experimentId: number) {
+  async startExperiment(experimentId: number) {
     const experiment = await this.prisma.experiment.findFirstOrThrow({
       where: {
-        id: $experimentId,
+        id: experimentId,
       },
     });
 
@@ -53,49 +56,7 @@ export class ClipGeneratorProxy {
 
     return Promise.all(
       sampleOutputs.map(async sampleOutput => {
-        const sample = sampleOutput.sample;
-        const data = sample.data as any;
-        const videoFile = data.videoFile;
-        const transcriptionFile = data.transcriptionFile;
-        const aiNotes = data.aiNotes;
-
-        await this.apiService.queueExtractJob({
-          jobId: `extract-${sampleOutput.id}`,
-          sampleId: sample.id,
-          experimentId: experiment.id,
-          parameters: experiment.parameters,
-          videoFile,
-          transcriptionFile,
-          aiNotes,
-          createdAt: new Date(),
-          webhooks: {
-            onNewClip: {
-              method: "post",
-              url: this.getApiUrl(
-                `/sample-output/${sampleOutput.id}/clip`,
-                sampleOutput
-              ),
-              params: {
-                name: "string",
-                description: "string",
-                tags: ["string"],
-                startTime: "number",
-                endTime: "number",
-                file: "File",
-              },
-            },
-            onStatusChange: {
-              method: "post",
-              url: this.getApiUrl(
-                `/sample-output/${sampleOutput.id}/status`,
-                sampleOutput
-              ),
-              params: {
-                status: "string",
-              },
-            },
-          },
-        });
+        await this.startSampleGenerating(sampleOutput, sampleOutput.sample);
       })
     );
   }
@@ -117,5 +78,50 @@ export class ClipGeneratorProxy {
     url.searchParams.append("token", token);
 
     return url.toString();
+  }
+
+  async startSampleGenerating(sampleOutput: SampleOutput, sample: Sample) {
+    const recording = factory.azureBlobSASService.generateReadOnlySasUrl(
+      sample.recordingVideoUrl
+    );
+    const transcript = factory.azureBlobSASService.generateReadOnlySasUrl(
+      sample.transcriptionFileUrl
+    );
+    const aiNotes = (sample.data as any).aiNotes;
+    const { sasUrl: containerRWSasUrl } =
+      await factory.azureBlobSASService.getContainerSASToken(
+        `so-${sampleOutput.id}`,
+        60 * 60 * 24 * 7
+      );
+
+    const data = {
+      recording,
+      transcript,
+      extra_prompt: aiNotes,
+      webhooks: {
+        onNewFile: {
+          url: containerRWSasUrl,
+        },
+        onStatusChange: {
+          url: this.getApiUrl(
+            `/sample-output/${sampleOutput.id}/status`,
+            sampleOutput
+          ),
+        },
+        onNewClip: {
+          url: this.getApiUrl(
+            `/sample-output/${sampleOutput.id}/clip`,
+            sampleOutput
+          ),
+        },
+      },
+      useCache: true,
+    };
+
+    console.log(
+      `Sending request to clip generator for sample output ${sampleOutput.id}`,
+      data
+    );
+    await axios.post(clipGeneratorApiUrl, data);
   }
 }

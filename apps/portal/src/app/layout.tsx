@@ -38,7 +38,7 @@ export default async function RootLayout({
           <Providers>
             <NavBar></NavBar>
             <div className="container mx-auto py-16 px-2">{children}</div>
-            <footer className="flex">
+            <footer className="hidden">
               <p className="flex-1">© {new Date().getFullYear()} FlashCast</p>
               {/* <ThemeSwitch></ThemeSwitch> */}
             </footer>

@@ -92,8 +92,8 @@ model Experiment {
   createdAt            DateTime       @default(now())
   parameters           Json           @default("{}")
   processStatus        String
-  processStatusHistory Json           @default("[]")
-  samples              Json           @default("[]")
+  processStatusHistory String[]
+  samples              Int[]
   userId               Int
   user                 User           @relation(fields: [userId], references: [id])
   isReadyForEvaluation Boolean        @default(false)
@@ -105,13 +105,15 @@ model Experiment {
 }
 
 model Sample {
-  id            Int            @id @default(autoincrement())
-  data          Json
-  createdAt     DateTime       @default(now())
-  userId        Int
-  user          User           @relation(fields: [userId], references: [id])
-  isPublic      Boolean        @default(false)
-  sampleOutputs SampleOutput[]
+  id                   Int            @id @default(autoincrement())
+  data                 Json
+  createdAt            DateTime       @default(now())
+  userId               Int
+  user                 User           @relation(fields: [userId], references: [id])
+  isPublic             Boolean        @default(false)
+  sampleOutputs        SampleOutput[]
+  recordingVideoUrl    String         @default("")
+  transcriptionFileUrl String         @default("")
 }
 
 model SampleOutput {
@@ -133,6 +135,14 @@ model Clip {
   sampleOutputId Int
   sampleOutput   SampleOutput     @relation(fields: [sampleOutputId], references: [id])
   data           Json
+  videoUrl       String           @default("")
+  headline       String           @default("")
+  description    String           @default("")
+  duration       Int              @default(0)
+  tags           String[]
+  startTime      Int              @default(0)
+  endTime        Int              @default(0)
+  payload        Json             @default("{}")
   createdAt      DateTime         @default(now())
   evaluations    ClipEvaluation[]
 }
@@ -144,7 +154,6 @@ model ClipEvaluation {
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
-  data      Json     @default("{}")
   score     Int
   comment   String?
 }
@@ -156,7 +165,6 @@ model SampleOutputEvaluation {
   userId         Int
   user           User         @relation(fields: [userId], references: [id])
   createdAt      DateTime     @default(now())
-  data           Json         @default("{}")
   score          Int
   comment        String?
 }

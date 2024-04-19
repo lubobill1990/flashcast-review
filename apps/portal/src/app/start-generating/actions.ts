@@ -2,17 +2,7 @@
 
 import factory from "@/factory";
 import { auth, getUser } from "@flashcast/auth";
-import { random } from "lodash-es";
 import { v4 as UUID } from "uuid";
-
-type SampleData =
-  | {
-      recording: string;
-      transcription: string;
-      notes: string;
-    }
-  | null
-  | undefined;
 
 const getBlobId = (blobName: string) =>
   `${UUID()}.${blobName.split(".").pop()}`;
@@ -32,14 +22,14 @@ export async function getUploadUrl(fileName: string) {
 export async function submit(
   recordingUrl: string,
   transcriptionUrl: string,
-  notes: string
+  aiNotes: string
 ) {
   const user = await factory.userService.getUser();
 
   const sample = await factory.sampleService.createSample(
     recordingUrl,
     transcriptionUrl,
-    notes
+    aiNotes
   );
 
   const experiment = await factory.experimentService.createExperiment(

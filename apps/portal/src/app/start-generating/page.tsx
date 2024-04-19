@@ -13,19 +13,53 @@ import {
   VideoClipWandIcon,
 } from "portal-ui";
 
-async function upload(url: string, file: File) {
-  return await fetch(url, {
-    method: "PUT",
-    body: file,
+import axios, { AxiosProgressEvent } from "axios";
+import { useState } from "react";
+import { ProgressBar } from "@fluentui/react-components";
+
+async function upload(
+  url: string,
+  file: File,
+  onUploadProcess?: (
+    progressEvent: AxiosProgressEvent & { total: number }
+  ) => void
+) {
+  return await axios.put(url, file, {
     headers: {
       "x-ms-blob-type": "BlockBlob",
       "Content-Type": file.type,
     },
+    onUploadProgress: function (progressEvent) {
+      onUploadProcess?.({
+        ...progressEvent,
+        total: progressEvent.total ?? file.size,
+      });
+    },
   });
+}
+
+function useProgress() {
+  const [progress, setProgress] = useState(0);
+  return [progress, setProgress, progress > 0 && progress < 1] as [
+    number,
+    typeof setProgress,
+    boolean
+  ];
 }
 
 export default function Page() {
   const router = useRouter();
+
+  const [
+    recordingUploadProgress,
+    setRecordingUploadProgress,
+    showRecordingUploadProgress,
+  ] = useProgress();
+  const [
+    transcriptionUploadProgress,
+    setTranscriptionUploadProgress,
+    showTranscriptionUploadProgress,
+  ] = useProgress();
 
   const handleSubmit = async (formData: FormData) => {
     const recording = formData.get("recording") as File;
@@ -38,9 +72,15 @@ export default function Page() {
       await getUploadUrl(transcription.name);
 
     await Promise.allSettled([
-      upload(recordingSASUrl, recording),
-      upload(transcriptionSASUrl, transcription),
+      upload(recordingSASUrl, recording, ({ loaded, total }) => {
+        setRecordingUploadProgress(loaded / total);
+      }),
+      upload(transcriptionSASUrl, transcription, ({ loaded, total }) => {
+        setTranscriptionUploadProgress(loaded / total);
+      }),
     ]);
+    setRecordingUploadProgress(1);
+    setTranscriptionUploadProgress(1);
 
     const id = await submit(recordingUrl, transcriptionUrl, notes);
     router.push(`/my-reels/${id}`);
@@ -50,28 +90,36 @@ export default function Page() {
     <>
       <Branding />
       <MainPageCard activePage="start_generating">
-        <Label style={{ fontSize: "16px" }}>
-          Upload recording file, transcript and AI notes from Meeting recap to
-          generate short clips that capture the key meeting moments and
-          summaries.
-        </Label>
-        <form action={handleSubmit} style={{ marginTop: "16px" }}>
+        <form action={handleSubmit} className="flex flex-col gap-4">
+          <Label size="large">
+            Upload recording file, transcript and AI notes from Meeting recap to
+            generate short clips that capture the key meeting moments and
+            summaries.
+          </Label>
           <Field
             required
             label={<Label weight="semibold">Recording</Label>}
-            hint="Upload the recording file from your device. Supporting file type: .mp4 and .mov files"
+            hint={`Upload the recording file from your device. Supporting file type: .mp4 and .mov files.`}
           >
             <input id="recording-input" type="file" name="recording" />
+            {/* {recordingUploadProgress > 0 && recordingUploadProgress < 1 && ( */}
+            {showRecordingUploadProgress && (
+              <ProgressBar className="mt-1" value={recordingUploadProgress} />
+            )}
           </Field>
-          <Divider style={{ margin: "16px 0" }} />
           <Field
             required
             label={<Label weight="semibold">Transcription</Label>}
-            hint="Go to Meeting Recap and click on “Download” under Transcript. Supporting file type: .docx file."
+            hint={`Go to Meeting Recap and click on “Download” under Transcript. Supporting file type: .docx file.`}
           >
             <input id="transcription-input" type="file" name="transcription" />
+            {showTranscriptionUploadProgress && (
+              <ProgressBar
+                className="mt-1"
+                value={transcriptionUploadProgress}
+              />
+            )}
           </Field>
-          <Divider style={{ margin: "16px 0" }} />
           <Field
             required
             label={<Label weight="semibold">AI notes</Label>}
@@ -88,6 +136,9 @@ export default function Page() {
                   "linear-gradient(99.14deg, #499DFF -17.23%, #5E64FF 41.03%, #E64EFF 150.75%)",
               }}
               icon={<VideoClipWandIcon />}
+              disabled={
+                showRecordingUploadProgress || showTranscriptionUploadProgress
+              }
             >
               Start generating reels
             </Button>

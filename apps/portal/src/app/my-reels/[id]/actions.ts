@@ -1,8 +1,10 @@
 "use server";
 
 import factory from "@/factory";
+import { ClipGeneratorProxy } from "@/service/clip-generator-proxy";
 import { getUserId } from "@flashcast/auth";
-import { sample } from "lodash-es";
+import { prisma } from "@flashcast/db";
+import axios from "axios";
 
 type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
 export type SampleOutput = ThenArg<
@@ -23,19 +25,18 @@ export async function getUserSampleOutputById(sampleOutputId: number) {
       userId,
       sampleOutputId
     );
-  (sampleOutput.sample.data as any).recording =
+  sampleOutput.sample.recordingVideoUrl =
     factory.azureBlobSASService.generateReadOnlySasUrl(
-      (sampleOutput.sample.data as any).recording
+      sampleOutput.sample.recordingVideoUrl
     );
-  (sampleOutput.sample.data as any).transcription =
+  sampleOutput.sample.transcriptionFileUrl =
     factory.azureBlobSASService.generateReadOnlySasUrl(
-      (sampleOutput.sample.data as any).transcription
+      sampleOutput.sample.transcriptionFileUrl
     );
   sampleOutput.clips.forEach(clip => {
-    (clip.data as any).clipUrl =
-      factory.azureBlobSASService.generateReadOnlySasUrl(
-        (clip.data as any).clipUrl
-      );
+    clip.videoUrl = factory.azureBlobSASService.generateReadOnlySasUrl(
+      clip.videoUrl
+    );
   });
   return sampleOutput;
 }
@@ -72,4 +73,25 @@ export async function submitClipEvaluation(
     score,
     comment
   );
+}
+
+export async function startGenerate(sampleOutputId: number) {
+  const userId = await getUserId();
+  if (!userId) {
+    throw new Error("User not found");
+  }
+
+  const sampleOutput =
+    await factory.sampleOutputService.getUserSampleOutputById(
+      userId,
+      sampleOutputId
+    );
+
+  if (sampleOutput.status !== "created") {
+    throw new Error("Generating has started.");
+  }
+
+  const client = axios.create();
+  const clipGenerator = new ClipGeneratorProxy(prisma);
+  return clipGenerator.startExperiment(sampleOutput.experimentId);
 }

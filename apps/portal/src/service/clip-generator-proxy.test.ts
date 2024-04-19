@@ -3,22 +3,12 @@
  */
 
 import { ClipGeneratorProxy } from "./clip-generator-proxy";
-import { ApiService } from "./api-service";
 import axios from "axios";
 import { PrismaTestingUtil } from "./prisma-testing-util";
 import { prisma } from "@flashcast/db";
 
 let queueExtractJob = jest.fn();
-// mock ApiService
-// jest.mock('./api-service', () => {
-//   return {
-//     ApiService: jest.fn().mockImplementation(() => {
-//       return {
-//         queueExtractJob,
-//       };
-//     }),
-//   };
-// });
+
 describe("ClipGeneratorProxy", () => {
   let service: ClipGeneratorProxy;
   let prismaTest: PrismaTestingUtil;
@@ -28,8 +18,7 @@ describe("ClipGeneratorProxy", () => {
     const client = axios.create({
       baseURL: "http://localhost:5000",
     });
-    const apiService = new ApiService(client);
-    service = new ClipGeneratorProxy(apiService, prisma);
+    service = new ClipGeneratorProxy(prisma);
   });
   it("", async () => {
     const exp = await prismaTest.createExperiment();

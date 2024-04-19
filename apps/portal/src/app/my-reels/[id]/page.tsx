@@ -3,6 +3,7 @@ import { toInteger } from "lodash-es";
 
 import { SampleOutputDetails } from "./sample-output-details";
 import { getUserSampleOutputById } from "./actions";
+import { ActionButton } from "./action-button";
 
 type Params = {
   params: {
@@ -21,6 +22,10 @@ export default async function Page({ params: { id } }: Params) {
         <SampleOutputDetails sampleOutput={sampleOutput}></SampleOutputDetails>
       ) : (
         <div>Reels unavailable</div>
+      )}
+
+      {sampleOutput.status === "created" && (
+        <ActionButton sampleOutputId={sampleOutput.id} />
       )}
     </div>
   );
