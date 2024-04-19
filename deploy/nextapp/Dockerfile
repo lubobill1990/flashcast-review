@@ -14,7 +14,8 @@ WORKDIR /app
 # Copy package files and lock files
 COPY package.json pnpm* ./
 COPY apps/portal/package.json ./apps/portal/
-COPY apps/portal/prisma ./apps/portal/prisma
+COPY packages/auth/package.json ./packages/auth/
+COPY packages/db/package.json ./packages/db/
 COPY packages/portal-ui/package.json ./packages/portal-ui/
 
 # Install dependencies using pnpm

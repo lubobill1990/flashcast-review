@@ -7,4 +7,5 @@ export {
   Button,
   Label,
   Divider,
+  Link,
 } from "@fluentui/react-components";
