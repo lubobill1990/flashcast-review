@@ -1,29 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getSampleOutputOrThrow } from '../sample-output-api-util';
+import { NextRequest, NextResponse } from "next/server";
+import { getSampleOutputOrThrow } from "../sample-output-api-util";
 import { prisma } from "@flashcast/db";
+import { z } from "zod";
+
+const Status = z.enum([
+  "queued",
+  "processing",
+  "completed",
+  "error",
+  "canceled",
+]);
 
 export async function POST(
   req: NextRequest,
   { params: { id } }: { params: { id: string } }
 ) {
-  const token = req.nextUrl.searchParams.get('token');
+  const token = req.nextUrl.searchParams.get("token");
   const { status } = await req.json();
-  console.log({ status, id });
 
-  if (
-    !token ||
-    !status ||
-    !['queued', 'processing', 'completed', 'error', 'canceled'].includes(status)
-  ) {
+  if (!token) {
     return NextResponse.error();
   }
 
-  const sampleOutput = await getSampleOutputOrThrow(prisma, id, token);
+  try {
+    const validStatus = Status.parse(status);
 
-  await prisma.sampleOutput.update({
-    where: { id: sampleOutput.id },
-    data: { status },
-  });
+    const sampleOutput = await getSampleOutputOrThrow(id, token);
 
-  return NextResponse.json({ success: true });
+    await prisma.sampleOutput.update({
+      where: { id: sampleOutput.id },
+      data: { status: validStatus },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    return NextResponse.error();
+  }
 }

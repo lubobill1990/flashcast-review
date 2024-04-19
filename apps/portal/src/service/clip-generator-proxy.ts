@@ -118,10 +118,6 @@ export class ClipGeneratorProxy {
       useCache: true,
     };
 
-    console.log(
-      `Sending request to clip generator for sample output ${sampleOutput.id}`,
-      data
-    );
     await axios.post(clipGeneratorApiUrl, data);
   }
 }

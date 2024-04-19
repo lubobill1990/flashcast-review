@@ -91,7 +91,6 @@ export async function startGenerate(sampleOutputId: number) {
     throw new Error("Generating has started.");
   }
 
-  const client = axios.create();
   const clipGenerator = new ClipGeneratorProxy(prisma);
   return clipGenerator.startExperiment(sampleOutput.experimentId);
 }
