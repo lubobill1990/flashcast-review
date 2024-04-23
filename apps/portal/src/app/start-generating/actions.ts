@@ -1,7 +1,9 @@
 "use server";
 
 import factory from "@/factory";
+import { ClipGeneratorProxy } from "@/service/clip-generator-proxy";
 import { auth, getUser } from "@flashcast/auth";
+import { prisma } from "@flashcast/db";
 import { v4 as UUID } from "uuid";
 
 const getBlobId = (blobName: string) =>
@@ -44,17 +46,8 @@ export async function submit(
     sample.id
   );
 
-  // Mock the creation of 10 clips
-  // Promise.allSettled(
-  //   new Array(random(3, 7))
-  //     .fill(0)
-  //     .map(() =>
-  //       factory.clipService.createClip(
-  //         sampleOutput.id,
-  //         (sample.data as SampleData)?.recording || ""
-  //       )
-  //     )
-  // );
+  const clipGenerator = new ClipGeneratorProxy(prisma);
+  await clipGenerator.startExperiment(sampleOutput.experimentId);
 
   return Promise.resolve(sampleOutput.id);
 }

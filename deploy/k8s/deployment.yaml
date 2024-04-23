@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: flashcast-nextapp
-          image: flashcasteval.azurecr.io/flashcast-nextapp:v1.1
+          image: flashcasteval.azurecr.io/flashcast-nextapp:v1.2
           imagePullPolicy: Always
           readinessProbe:
             httpGet:

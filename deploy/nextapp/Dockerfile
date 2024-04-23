@@ -5,51 +5,51 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-FROM base AS prod-deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
-
 WORKDIR /app
 
-# Copy package files and lock files
-COPY package.json pnpm* ./
-COPY apps/portal/package.json ./apps/portal/
-COPY packages/auth/package.json ./packages/auth/
-COPY packages/db/package.json ./packages/db/
-COPY packages/portal-ui/package.json ./packages/portal-ui/
-
-# Install dependencies using pnpm
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+COPY --link . .
 
 FROM base AS builder
-WORKDIR /app
-COPY apps ./apps
-COPY packages ./packages
-COPY package.json pnpm* tsconfig* ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add libc6-compat python3
+
+# Install dependencies using pnpm
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store yes Y | pnpm install
+
+RUN pnpm db:generate
+ENV NODE_ENV production
 RUN pnpm build
 
-FROM base AS runner
-WORKDIR /app
-
-COPY --from=prod-deps /app/node_modules ./node_modules
-COPY --from=prod-deps /app/apps/portal/node_modules ./apps/portal/node_modules
-COPY --from=prod-deps /app/packages/portal-ui/node_modules ./packages/portal-ui/node_modules
-
+FROM node:20-alpine AS runner
 ENV NODE_ENV production
+# Bort PORT / HOSTNAME envs are respected by nextjs start/dev.
+ENV HOSTNAME=0.0.0.0
+ENV PORT=${NEXTJS_APP_PORT:-3000}
+
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
+
+WORKDIR /app
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Set the correct permission for prerender cache
-COPY --from=builder --chown=nextjs:nodejs /app/apps/portal/.next/standalone /app/apps/portal/.next/standalone
-COPY --from=builder --chown=nextjs:nodejs /app/apps/portal/.next/static /app/apps/portal/.next/standalone/.next/static
-COPY --from=builder /app/apps/portal/public /app/apps/portal/.next/standalone/public
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
 
-RUN chown nextjs:nodejs /app/apps/portal/.next/
+USER nextjs
+
+
+COPY --from=builder --chown=nextjs:nodejs /app/apps/portal/next.config.mjs \
+  /app/apps/portal/package.json \
+  ./
+
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/apps/portal/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/portal/.next/static ./apps/portal/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/portal/public ./apps/portal/public
 
 USER nextjs
 
@@ -57,4 +57,4 @@ EXPOSE 3000
 
 ENV PORT 3000
 # execute npm run start
-CMD HOSTNAME="0.0.0.0" node /app/apps/portal/.next/standalone/server.js
+CMD HOSTNAME="0.0.0.0" node apps/portal/server.js

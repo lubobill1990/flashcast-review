@@ -1,41 +1,61 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getSampleOutputOrThrow } from '../sample-output-api-util';
+import { NextRequest, NextResponse } from "next/server";
+import { getSampleOutputOrThrow } from "../sample-output-api-util";
 import { prisma } from "@flashcast/db";
+import { z } from "zod";
+
+const ClipRequest = z.object({
+  headline: z.string().min(1),
+  description: z.string().optional(),
+  duration: z.number(),
+  tags: z.string().array(),
+  startTime: z.number(),
+  endTime: z.number().min(0),
+  storagePath: z.string().url().min(1),
+  payload: z.string().optional(),
+});
 
 export async function POST(
   req: NextRequest,
   { params: { id } }: { params: { id: string } }
 ) {
-  const token = req.nextUrl.searchParams.get('token');
+  const token = req.nextUrl.searchParams.get("token");
 
-  // Parse the incoming form data
-  const formData = await req.formData();
-
-  // Get the file from the form data
-  const file = formData.get('file') as File;
-
-  if (!token || !file) {
+  if (!token) {
     return NextResponse.error();
   }
 
-  const sampleOutput = await getSampleOutputOrThrow(prisma, id, token);
+  try {
+    const reqData = await req.json();
+    const clipData = ClipRequest.parse(reqData);
 
-  // TODO save file to file system
+    console.log({
+      clipData,
+    });
 
-  await prisma.clip.create({
-    data: {
-      sampleOutput: {
-        connect: {
-          id: sampleOutput.id,
-        },
-      },
+    const sampleOutput = await getSampleOutputOrThrow(id, token);
+
+    await prisma.clip.create({
       data: {
-        file: {
-          filename: file.name,
+        videoUrl: clipData.storagePath,
+        headline: clipData.headline,
+        description: clipData.description,
+        duration: clipData.duration,
+        tags: clipData.tags,
+        startTime: clipData.startTime,
+        endTime: clipData.endTime,
+        payload: clipData.payload,
+        data: {},
+        sampleOutput: {
+          connect: {
+            id: sampleOutput.id,
+          },
         },
       },
-    },
-  });
+    });
 
-  return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    console.log(e);
+    return NextResponse.error();
+  }
 }

@@ -23,10 +23,6 @@ export default async function Page({ params: { id } }: Params) {
       ) : (
         <div>Reels unavailable</div>
       )}
-
-      {sampleOutput.status === "created" && (
-        <ActionButton sampleOutputId={sampleOutput.id} />
-      )}
     </div>
   );
 }

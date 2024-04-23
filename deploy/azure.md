@@ -37,7 +37,9 @@ az aks install-cli
 az aks get-credentials --resource-group FlashCastEvaluation --name FlashCastK8s
 
 # build and push image
-az acr build --image flashcasteval.azurecr.io/flashcast-nextapp:v1 --registry flashcasteval --file nextapp/Dockerfile .
+docker compose -f ./deploy/docker-compose.yml build nextapp
+docker push flashcasteval.azurecr.io/flashcast-nextapp:v1.2
+
 
 az network front-door create --resource-group FlashCastEvaluation --name flashcasteval --backend-address "104.42.142.32"
 
