@@ -5,14 +5,6 @@ import Link from "next/link";
 import React from "react";
 import { Clip, Sample, SampleOutput } from "@flashcast/db";
 
-type ClipData =
-  | {
-      clipUrl?: string;
-      thumnailUrl?: string;
-    }
-  | null
-  | undefined;
-
 export const ReelsCollection: React.FC<{
   sampleOutput: SampleOutput;
   sample: Sample;
@@ -21,9 +13,6 @@ export const ReelsCollection: React.FC<{
   const status = sampleOutput.status;
   const title = sample.meetingTitle || "";
 
-  const clipThumnails = clips.map(
-    clip => (clip.data as ClipData)?.clipUrl || ""
-  );
   const createdDate = sampleOutput.createdAt.toLocaleString();
   const url = `/my-reels/${sampleOutput.id}`;
 
@@ -31,7 +20,7 @@ export const ReelsCollection: React.FC<{
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ fontSize: "14px" }}>
-          <strong>{clipThumnails.length} Reels</strong>
+          <strong>{clips.length} Reels</strong>
           {" generated from "}
           <strong>{title}</strong>
           <Tag
@@ -64,11 +53,11 @@ export const ReelsCollection: React.FC<{
       </div>
       <div>
         <ul>
-          {clipThumnails.map(clipUrl => (
-            <li key={clipUrl} style={{ float: "left", marginRight: "8px" }}>
+          {clips.map(clip => (
+            <li key={clip.id} style={{ float: "left", marginRight: "8px" }}>
               <video
                 className="w-[60px] aspect-[9/16] rounded-md"
-                src={clipUrl}
+                src={clip.videoUrl}
               ></video>
             </li>
           ))}

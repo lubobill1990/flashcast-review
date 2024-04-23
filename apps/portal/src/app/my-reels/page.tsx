@@ -6,6 +6,13 @@ export default async function Page() {
   const user = await factory.userService.getUser();
   const sampleOutputs =
     await factory.sampleOutputService.getSampleOutputsByUserId(user.id);
+  sampleOutputs.forEach(sampleOutput => {
+    sampleOutput.clips.forEach(clip => {
+      clip.videoUrl = factory.azureBlobSASService.generateReadOnlySasUrl(
+        clip.videoUrl
+      );
+    });
+  });
 
   return (
     <>
