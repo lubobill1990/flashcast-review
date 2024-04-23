@@ -114,6 +114,7 @@ model Sample {
   isPublic             Boolean        @default(false)
   sampleOutputs        SampleOutput[]
   recordingVideoUrl    String         @default("")
+  meetingTitle         String         @default("")
   transcriptionFileUrl String         @default("")
 }
 

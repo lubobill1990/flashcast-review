@@ -13,20 +13,13 @@ type ClipData =
   | null
   | undefined;
 
-type SampleData =
-  | {
-      recordingTitle: string;
-    }
-  | null
-  | undefined;
-
 export const ReelsCollection: React.FC<{
   sampleOutput: SampleOutput;
   sample: Sample;
   clips: Clip[];
 }> = ({ sampleOutput, sample, clips }) => {
   const status = sampleOutput.status;
-  const title = (sample.data as SampleData)?.recordingTitle || "";
+  const title = sample.meetingTitle || "";
 
   const clipThumnails = clips.map(
     clip => (clip.data as ClipData)?.clipUrl || ""
@@ -44,9 +37,16 @@ export const ReelsCollection: React.FC<{
           <Tag
             style={{
               marginLeft: "8px",
-              background: "#13A10E",
+              background:
+                status === "completed"
+                  ? "#13A10E"
+                  : status === "error"
+                  ? "#FF0000"
+                  : "#EBEBEB",
               borderRadius: "4px",
               color: "#FFFFFF",
+              fontSize: "10px",
+              fontWeight: 600,
             }}
           >
             {status}

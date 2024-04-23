@@ -89,6 +89,10 @@ const ArtifactsForm = ({
     const transcription = formData.get("transcription") as File;
     const notes = formData.get("notes") as string;
 
+    const splitTranscriptionFileName = transcription.name.split(".");
+    splitTranscriptionFileName.pop();
+    const meetingTitle = splitTranscriptionFileName.join(".");
+
     const { blobUrl: recordingUrl, sasUrl: recordingSASUrl } =
       await getUploadUrl(recording.name);
     const { blobUrl: transcriptionUrl, sasUrl: transcriptionSASUrl } =
@@ -107,7 +111,7 @@ const ArtifactsForm = ({
     setTranscriptionUploadProgress(1);
 
     setStatus("starting");
-    const id = await submit(recordingUrl, transcriptionUrl, notes);
+    await submit(meetingTitle, recordingUrl, transcriptionUrl, notes);
     setStatus("started");
   };
 

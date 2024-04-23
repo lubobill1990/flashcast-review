@@ -22,6 +22,7 @@ export async function getUploadUrl(fileName: string) {
 }
 
 export async function submit(
+  meetingTitle: string,
   recordingUrl: string,
   transcriptionUrl: string,
   aiNotes: string
@@ -29,6 +30,7 @@ export async function submit(
   const user = await factory.userService.getUser();
 
   const sample = await factory.sampleService.createSample(
+    meetingTitle,
     recordingUrl,
     transcriptionUrl,
     aiNotes
@@ -41,15 +43,11 @@ export async function submit(
     undefined,
     [sample.id]
   );
-  const sampleOutput = await factory.sampleOutputService.createSampleOutput(
-    experiment.id,
-    sample.id
-  );
 
   const clipGenerator = new ClipGeneratorProxy(prisma);
-  await clipGenerator.startExperiment(sampleOutput.experimentId);
+  await clipGenerator.startExperiment(experiment.id);
 
-  return Promise.resolve(sampleOutput.id);
+  return Promise.resolve();
 }
 
 export async function getUserInfo() {

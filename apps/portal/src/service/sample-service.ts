@@ -27,6 +27,7 @@ export class SampleService {
   }
 
   async createSample(
+    meetingTitle: string,
     recordingUrl: string,
     transcriptionUrl: string,
     aiNotes: string
@@ -40,6 +41,7 @@ export class SampleService {
         isPublic: true,
         userId: user.id,
         recordingVideoUrl: recordingUrl,
+        meetingTitle: meetingTitle,
         transcriptionFileUrl: transcriptionUrl,
       },
     });
