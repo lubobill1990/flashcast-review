@@ -44,7 +44,10 @@ export const ReelsCollection: React.FC<{
                   ? "#FF0000"
                   : "#EBEBEB",
               borderRadius: "4px",
-              color: "#FFFFFF",
+              color:
+                status === "completed" || status === "error"
+                  ? "#FFFFFF"
+                  : "#616161",
               fontSize: "10px",
               fontWeight: 600,
             }}
