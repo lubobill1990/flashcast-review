@@ -17,6 +17,8 @@ import { useState } from "react";
 import { ProgressBar } from "@fluentui/react-components";
 import NextLink from "next/link";
 
+type STATUS = "fill-form" | "uploading" | "starting" | "started";
+
 async function upload(
   url: string,
   file: File,
@@ -48,16 +50,16 @@ function useProgress() {
 }
 
 export default function Page() {
-  const [uploaded, setUploaded] = useState(false);
+  const [status, setStatus] = useState<STATUS>("fill-form");
 
   return (
     <>
       <Branding />
       <MainPageCard activePage="start_generating">
-        {uploaded ? (
-          <GeneratingPage setUploaded={setUploaded} />
+        {status === "started" ? (
+          <GeneratingPage setStatus={setStatus} />
         ) : (
-          <ArtifactsForm setUploaded={setUploaded} />
+          <ArtifactsForm status={status} setStatus={setStatus} />
         )}
       </MainPageCard>
     </>
@@ -65,9 +67,11 @@ export default function Page() {
 }
 
 const ArtifactsForm = ({
-  setUploaded,
+  status,
+  setStatus,
 }: {
-  setUploaded: (val: boolean) => void;
+  status: STATUS;
+  setStatus: (status: STATUS) => void;
 }) => {
   const [
     recordingUploadProgress,
@@ -90,6 +94,7 @@ const ArtifactsForm = ({
     const { blobUrl: transcriptionUrl, sasUrl: transcriptionSASUrl } =
       await getUploadUrl(transcription.name);
 
+    setStatus("uploading");
     await Promise.allSettled([
       upload(recordingSASUrl, recording, ({ loaded, total }) => {
         setRecordingUploadProgress(loaded / total);
@@ -100,13 +105,11 @@ const ArtifactsForm = ({
     ]);
     setRecordingUploadProgress(1);
     setTranscriptionUploadProgress(1);
-    setUploaded(true);
 
+    setStatus("starting");
     const id = await submit(recordingUrl, transcriptionUrl, notes);
+    setStatus("started");
   };
-
-  const isUploading =
-    showRecordingUploadProgress || showTranscriptionUploadProgress;
 
   return (
     <form action={handleSubmit} className="flex flex-col gap-4">
@@ -157,10 +160,16 @@ const ArtifactsForm = ({
             background:
               "linear-gradient(99.14deg, #499DFF -17.23%, #5E64FF 41.03%, #E64EFF 150.75%)",
           }}
-          icon={<VideoClipWandIcon />}
-          disabled={isUploading}
+          icon={status === "fill-form" ? <VideoClipWandIcon /> : undefined}
+          disabled={status !== "fill-form"}
         >
-          Start generating reels
+          {status === "fill-form"
+            ? "Start generating reels"
+            : status === "uploading"
+            ? "Uploading artifacts..."
+            : status === "starting"
+            ? "Starting experiment..."
+            : "Generating..."}
         </Button>
       </div>
     </form>
@@ -168,12 +177,12 @@ const ArtifactsForm = ({
 };
 
 const GeneratingPage = ({
-  setUploaded,
+  setStatus,
 }: {
-  setUploaded: (val: boolean) => void;
+  setStatus: (status: STATUS) => void;
 }) => {
   const handleStartover = () => {
-    setUploaded(false);
+    setStatus("fill-form");
   };
 
   return (
