@@ -13,6 +13,15 @@ export default async function Page() {
       );
     });
   });
+  sampleOutputs.sort((a, b) => {
+    if (a.createdAt < b.createdAt) {
+      return 1;
+    } else if (a.createdAt > b.createdAt) {
+      return -1;
+    } else {
+      return 0;
+    }
+  });
 
   return (
     <>
