@@ -56,7 +56,14 @@ helm install my-postgresql bitnami/postgresql --set persistence.size=2Gi
 Set secret
 
 ```bash
-kubectl create secret generic nextapp --from-literal=nextauth_secret=qxjhk3udgujkhhyweokc92742-giuhjgk --from-literal=app_host=https://flashcasteval.azurefd.net --from-literal=azure_ad_tenant_id=[replace with true value] --from-literal=azure_ad_client_id=[replace with true value] --from-literal=azure_ad_client_secret=[replace with true value] --from-literal=storage_account=[replace with true value] --from-literal=storage_account_key=[replace with true value]
+kubectl create secret generic nextapp \
+  --from-literal=nextauth_secret=qxjhk3udgujkhhyweokc92742-giuhjgk \
+  --from-literal=app_host=https://flashcasteval.azurefd.net \
+  --from-literal=azure_ad_tenant_id=[replace with true value] \
+  --from-literal=azure_ad_client_id=[replace with true value] \
+  --from-literal=azure_ad_client_secret=[replace with true value] \
+  --from-literal=storage_account=[replace with true value] \
+  --from-literal=storage_account_key=[replace with true value]
 ```
 
 Redeploy k8s deployment

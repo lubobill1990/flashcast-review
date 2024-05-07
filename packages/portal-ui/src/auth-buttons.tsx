@@ -1,34 +1,15 @@
 "use server";
 
-import { auth, signIn, signOut } from "@flashcast/auth";
+import { auth } from "@flashcast/auth";
 import Image from "next/image";
+import Link from "next/link";
 
 export async function LoginButton() {
-  return (
-    <form
-      action={async () => {
-        "use server";
-        await signIn("azure-ad");
-      }}
-    >
-      <button type="submit">Sign in with Microsoft account</button>
-    </form>
-  );
+  return <Link href="/.auth/login/aad">Log in</Link>;
 }
 
 export async function LogoutButton() {
-  return (
-    <form
-      action={async () => {
-        "use server";
-        await signOut({
-          redirectTo: "/",
-        });
-      }}
-    >
-      <button type="submit">Log out</button>
-    </form>
-  );
+  return <Link href="/.auth/logout">Log out</Link>;
 }
 
 export async function AuthButton() {

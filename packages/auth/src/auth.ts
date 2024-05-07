@@ -1,52 +1,65 @@
-import NextAuth from "next-auth";
+import { headers } from "next/headers";
+import { Session } from "./auth.interface";
+import { getAccount, createAccount } from "./util";
 
-import AzureAAD from "next-auth/providers/azure-ad";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+const getAppServiceClaims = (): {
+  // JSON representation of available claims.
+  principalClaims: {
+    auth_typ: string;
+    claims: { typ: string; val: string }[];
+  };
+  // An identifier for the caller set by the identity provider.
+  principalId: string;
+  // A human-readable name for the caller set by the identity provider, e.g. Email Address, User Principal Name.
+  principalName: string;
+  // The name of the identity provider used by App Service Authentication.
+  principalIdp: string;
+} => {
+  const reqHeaders = headers();
 
-import type { NextAuthConfig } from "next-auth";
-import { prisma } from "@flashcast/db";
+  const principalClaims = reqHeaders.get("X-MS-CLIENT-PRINCIPAL") || "";
+  const principalId = reqHeaders.get("X-MS-CLIENT-PRINCIPAL-ID") || "";
+  const principalName = reqHeaders.get("X-MS-CLIENT-PRINCIPAL-NAME") || "";
+  const principalIdp = reqHeaders.get("X-MS-CLIENT-PRINCIPAL-IDP") || "";
 
-export const config = {
-  adapter: PrismaAdapter(prisma),
-  trustHost: true,
-  debug: true,
-  theme: {
-    logo: "/logo.svg",
-  },
-  providers: [
-    // GitHub,
-    AzureAAD({
-      clientId: process.env.AZURE_AD_CLIENT_ID,
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
-      tenantId: process.env.AZURE_AD_TENANT_ID,
-    }),
-  ],
-  basePath: "/auth",
-  session: { strategy: "jwt" },
-  // pages: {
-  //   signIn: "/login",
-  // },
-  callbacks: {
-    authorized({ request, auth }) {
-      const { pathname } = request.nextUrl;
-      if (pathname === "/middleware-example") return !!auth;
-      return true;
-    },
-    async jwt({ token, trigger, session }) {
-      if (trigger === "update") token.name = session.user.name;
-      return token;
-    },
-    async session({ session, token }) {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.sub as string,
-        },
-      };
-    },
-  },
-  secret: process.env.AUTH_SECRET,
-} satisfies NextAuthConfig;
+  const parsedClaims = JSON.parse(atob(principalClaims) || "{}");
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+  return {
+    principalClaims: parsedClaims,
+    principalId,
+    principalName,
+    principalIdp,
+  };
+};
+
+export const auth = async (): Promise<Session> => {
+  const { principalClaims, principalId, principalName, principalIdp } =
+    getAppServiceClaims();
+
+  const account = await getAccount(principalIdp, principalId);
+  if (!account) {
+    const userName =
+      principalClaims?.claims?.find(claim => claim.typ === "name")?.val ||
+      principalName.split("@")[0] ||
+      principalName;
+    const userEmail =
+      principalClaims?.claims?.find(
+        claim =>
+          claim.typ ===
+          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"
+      )?.val || principalName;
+    const newAccount = await createAccount(
+      principalIdp,
+      principalId,
+      userName,
+      userEmail
+    );
+    return {
+      user: newAccount?.user,
+    };
+  }
+
+  return {
+    user: account?.user,
+  };
+};

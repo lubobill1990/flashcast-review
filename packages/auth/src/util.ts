@@ -26,3 +26,35 @@ export async function getUser() {
 
   return user;
 }
+
+export const getAccount = (provider: string, providerAccountId: string) => {
+  return prisma.account.findUnique({
+    where: {
+      provider_providerAccountId: {
+        provider,
+        providerAccountId,
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+};
+
+export const createAccount = async (
+  provider: string,
+  providerAccountId: string,
+  name: string,
+  email: string
+) => {
+  const user = await prisma.user.create({ data: { name, email } });
+  return prisma.account.create({
+    data: {
+      provider,
+      providerAccountId,
+      userId: user.id,
+      type: "oidc",
+    },
+    include: { user: true },
+  });
+};

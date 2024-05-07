@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import { Providers } from "./providers";
 import { NavBar } from "portal-ui";
-// import { ThemeSwitch } from './theme-switch';
 import { cookies } from "next/headers";
-import { auth, getUserId } from "@flashcast/auth";
-import { LoginButton } from "portal-ui";
-import factory from "@/factory";
+import { auth } from "@flashcast/auth";
+
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +21,7 @@ export default async function RootLayout({
 }>) {
   const theme: string = cookies().get("next-theme")?.value ?? "light";
   const session = await auth();
+
   return (
     <html lang="en" className={theme} style={{ colorScheme: theme }}>
       <body
@@ -43,12 +42,6 @@ export default async function RootLayout({
               {/* <ThemeSwitch></ThemeSwitch> */}
             </footer>
           </Providers>
-        )}
-
-        {!session?.user && (
-          <div className="flex justify-center p-8">
-            <LoginButton />
-          </div>
         )}
       </body>
     </html>
