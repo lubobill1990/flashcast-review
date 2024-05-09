@@ -33,15 +33,18 @@ export default async function RootLayout({
           height: "100vh",
         }}
       >
-        {session?.user && (
+        {session?.user ? (
           <Providers>
             <NavBar></NavBar>
             <div className="container mx-auto py-16 px-2">{children}</div>
             <footer className="hidden">
               <p className="flex-1">© {new Date().getFullYear()} FlashCast</p>
-              {/* <ThemeSwitch></ThemeSwitch> */}
             </footer>
           </Providers>
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            No Permission
+          </div>
         )}
       </body>
     </html>

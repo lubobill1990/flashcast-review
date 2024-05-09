@@ -32,22 +32,25 @@ const getAppServiceClaims = (): {
   };
 };
 
+const whitelist = process.env.WHITELIST?.split(";") || [];
+
 export const auth = async (): Promise<Session> => {
   const { principalClaims, principalId, principalName, principalIdp } =
     getAppServiceClaims();
 
   const account = await getAccount(principalIdp, principalId);
-  if (!account) {
+  const userEmail =
+    principalClaims?.claims?.find(
+      claim =>
+        claim.typ ===
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"
+    )?.val || principalName;
+
+  if (!account && whitelist.includes(userEmail)) {
     const userName =
       principalClaims?.claims?.find(claim => claim.typ === "name")?.val ||
       principalName.split("@")[0] ||
       principalName;
-    const userEmail =
-      principalClaims?.claims?.find(
-        claim =>
-          claim.typ ===
-          "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"
-      )?.val || principalName;
     const newAccount = await createAccount(
       principalIdp,
       principalId,
