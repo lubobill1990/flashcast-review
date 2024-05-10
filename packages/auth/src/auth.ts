@@ -16,7 +16,6 @@ const getAppServiceClaims = (): {
   principalIdp: string;
 } => {
   const reqHeaders = headers();
-  console.log(reqHeaders);
 
   const principalClaims = reqHeaders.get("X-MS-CLIENT-PRINCIPAL") || "";
   const principalId = reqHeaders.get("X-MS-CLIENT-PRINCIPAL-ID") || "";
@@ -34,7 +33,6 @@ const getAppServiceClaims = (): {
 };
 
 export const auth = async (): Promise<ISession> => {
-  console.log("auth");
   const { principalClaims, principalId, principalName, principalIdp } =
     getAppServiceClaims();
 
