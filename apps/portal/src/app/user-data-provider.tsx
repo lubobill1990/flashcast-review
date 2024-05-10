@@ -1,3 +1,5 @@
+"use client";
+
 import { IUser } from "@flashcast/auth";
 import {
   FunctionComponent,

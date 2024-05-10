@@ -17,7 +17,7 @@ services:
     build:
       context: ../
       dockerfile: ./deploy/nextapp/Dockerfile
-    image: flashcastcr.azurecr.io/flashcast-nextapp:v1.3.2-dev
+    image: flashcastcr.azurecr.io/flashcast-nextapp:v1.3.3-dev
     restart: always
     ports:
       - "3000:3000"
