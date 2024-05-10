@@ -8,6 +8,7 @@ export class SampleService {
   ) {}
 
   async generateSampleUrl(containerName: string, id: string) {
+    console.log("[generateSampleUrl] Generating url");
     return this.azureBlobSASService.getBlobSASToken(containerName, id);
   }
 

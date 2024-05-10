@@ -2,14 +2,14 @@
 
 import { auth } from "@flashcast/auth";
 import Image from "next/image";
-import Link from "next/link";
+import { Button } from "@fluentui/react-components";
 
 export async function LoginButton() {
-  return <Link href="/.auth/login/aad">Log in</Link>;
+  return <Button href="/.auth/login/aad">Log in</Button>;
 }
 
 export async function LogoutButton() {
-  return <Link href="/.auth/logout">Log out</Link>;
+  return <Button href="/.auth/logout">Log out</Button>;
 }
 
 export async function AuthButton() {

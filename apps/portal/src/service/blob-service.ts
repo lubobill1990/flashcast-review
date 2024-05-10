@@ -84,7 +84,7 @@ export class AzureBlobSASService {
       permissions: sasPermissions,
       protocol: SASProtocol.Https,
     });
-
+    console.log("[getBlobSASToken] New token generated");
     return {
       blobUrl,
       sasUrl,
@@ -115,7 +115,7 @@ export class AzureBlobSASService {
       sasUrl,
     };
   }
-  
+
   generateReadOnlySasUrl(storageUrl: string) {
     const url = new URL(storageUrl);
     const pathParts = url.pathname.split("/");

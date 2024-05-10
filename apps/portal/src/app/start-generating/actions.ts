@@ -9,6 +9,7 @@ const getBlobId = (blobName: string) =>
   `${UUID()}.${blobName.split(".").pop()}`;
 
 export async function getUploadUrl(fileName: string, uuid: string) {
+  console.log("[getUploadUrl]");
   const { blobUrl, sasUrl } = await factory.sampleService.generateSampleUrl(
     `u-${uuid}`,
     getBlobId(fileName)
