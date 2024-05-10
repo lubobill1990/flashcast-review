@@ -2,20 +2,15 @@
 
 import factory from "@/factory";
 import { ClipGeneratorProxy } from "@/service/clip-generator-proxy";
-import { auth, getUser } from "@flashcast/auth";
 import { prisma } from "@flashcast/db";
 import { v4 as UUID } from "uuid";
 
 const getBlobId = (blobName: string) =>
   `${UUID()}.${blobName.split(".").pop()}`;
 
-export async function getUploadUrl(fileName: string) {
-  const user = await getUser();
-  if (!user) {
-    throw new Error("User not found");
-  }
+export async function getUploadUrl(fileName: string, uuid: string) {
   const { blobUrl, sasUrl } = await factory.sampleService.generateSampleUrl(
-    `u-${user.uuid}`,
+    `u-${uuid}`,
     getBlobId(fileName)
   );
   return { blobUrl, sasUrl };
@@ -25,19 +20,19 @@ export async function submit(
   meetingTitle: string,
   recordingUrl: string,
   transcriptionUrl: string,
-  aiNotes: string
+  aiNotes: string,
+  userId: number
 ) {
-  const user = await factory.userService.getUser();
-
   const sample = await factory.sampleService.createSample(
     meetingTitle,
     recordingUrl,
     transcriptionUrl,
-    aiNotes
+    aiNotes,
+    userId
   );
 
   const experiment = await factory.experimentService.createExperiment(
-    user.id,
+    userId,
     UUID(),
     "",
     undefined,
@@ -48,9 +43,4 @@ export async function submit(
   await clipGenerator.startExperiment(experiment.id);
 
   return Promise.resolve();
-}
-
-export async function getUserInfo() {
-  const session = await auth();
-  console.log("getUserInfo", { session }, Date.now());
 }

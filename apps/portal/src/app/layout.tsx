@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Providers } from "./providers";
+import { UserProvider } from "./user-data-provider";
 import { NavBar } from "portal-ui";
 import { cookies } from "next/headers";
 import { auth } from "@flashcast/auth";
@@ -34,14 +35,16 @@ export default async function RootLayout({
         }}
       >
         {session?.user && (
-          <Providers>
-            <NavBar></NavBar>
-            <div className="container mx-auto py-16 px-2">{children}</div>
-            <footer className="hidden">
-              <p className="flex-1">© {new Date().getFullYear()} FlashCast</p>
-              {/* <ThemeSwitch></ThemeSwitch> */}
-            </footer>
-          </Providers>
+          <UserProvider {...session.user}>
+            <Providers>
+              <NavBar></NavBar>
+              <div className="container mx-auto py-16 px-2">{children}</div>
+              <footer className="hidden">
+                <p className="flex-1">© {new Date().getFullYear()} FlashCast</p>
+                {/* <ThemeSwitch></ThemeSwitch> */}
+              </footer>
+            </Providers>
+          </UserProvider>
         )}
       </body>
     </html>

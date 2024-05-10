@@ -2,7 +2,6 @@
 
 import factory from "@/factory";
 import { ClipGeneratorProxy } from "@/service/clip-generator-proxy";
-import { getUserId } from "@flashcast/auth";
 import { prisma } from "@flashcast/db";
 import axios from "axios";
 
@@ -11,15 +10,10 @@ export type SampleOutput = ThenArg<
   ReturnType<typeof factory.sampleOutputService.getUserSampleOutputById>
 >;
 
-export async function getUser() {
-  return factory.userService.getUser();
-}
-
-export async function getUserSampleOutputById(sampleOutputId: number) {
-  const userId = await getUserId();
-  if (!userId) {
-    throw new Error("User not found");
-  }
+export async function getUserSampleOutputById(
+  sampleOutputId: number,
+  userId: number
+) {
   const sampleOutput =
     await factory.sampleOutputService.getUserSampleOutputById(
       userId,
@@ -43,13 +37,10 @@ export async function getUserSampleOutputById(sampleOutputId: number) {
 
 export async function submitSampleOutputEvaluation(
   sampleOutputId: number,
+  userId: number,
   score?: number,
   comment?: string
 ) {
-  const userId = await getUserId();
-  if (!userId) {
-    throw new Error("User not found");
-  }
   return factory.evaluationService.submitSampleOutputEvaluation(
     sampleOutputId,
     userId,
@@ -60,13 +51,10 @@ export async function submitSampleOutputEvaluation(
 
 export async function submitClipEvaluation(
   clipId: number,
+  userId: number,
   score?: number,
   comment?: string
 ) {
-  const userId = await getUserId();
-  if (!userId) {
-    throw new Error("User not found");
-  }
   return factory.evaluationService.submitClipEvaluation(
     clipId,
     userId,
@@ -75,12 +63,7 @@ export async function submitClipEvaluation(
   );
 }
 
-export async function startGenerate(sampleOutputId: number) {
-  const userId = await getUserId();
-  if (!userId) {
-    throw new Error("User not found");
-  }
-
+export async function startGenerate(sampleOutputId: number, userId: number) {
   const sampleOutput =
     await factory.sampleOutputService.getUserSampleOutputById(
       userId,

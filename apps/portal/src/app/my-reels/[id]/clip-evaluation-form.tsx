@@ -20,6 +20,7 @@ import {
 } from "@fluentui/react-components";
 
 import { submitClipEvaluation } from "./actions";
+import { useUserData } from "@/app/user-data-provider";
 
 type IClipEvaluationFormProps = {
   clipId: number;
@@ -29,11 +30,12 @@ export function ClipEvaluationForm({
   clipId,
   evaluation,
 }: IClipEvaluationFormProps) {
+  const { id: userId } = useUserData();
   const submitEvaluation = useCallback(
     (score?: number, comment?: string) => {
-      submitClipEvaluation(clipId, score, comment);
+      submitClipEvaluation(clipId, userId, score, comment);
     },
-    [clipId]
+    [clipId, userId]
   );
   const [comment, setComment] = React.useState<string>();
   const [open, setOpen] = React.useState(false);

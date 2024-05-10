@@ -1,4 +1,4 @@
-import { Session } from "./auth.interface";
+import { ISession } from "./auth.interface";
 import { getAccount, createAccount } from "./util";
 
 const MOCK_USER = {
@@ -8,7 +8,7 @@ const MOCK_USER = {
   userEmail: "usermock@contoso.com",
 };
 
-export const auth = async (): Promise<Session> => {
+export const auth = async (): Promise<ISession> => {
   const account = await getAccount(
     MOCK_USER.principalIdp,
     MOCK_USER.principalId

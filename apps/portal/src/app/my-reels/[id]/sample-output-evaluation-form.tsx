@@ -20,6 +20,7 @@ import {
   ToastTitle,
 } from "@fluentui/react-components";
 import { submitSampleOutputEvaluation } from "./actions";
+import { useUserData } from "@/app/user-data-provider";
 
 type ISampleOutputEvaluationFormProps = {
   sampleOutputId: number;
@@ -30,11 +31,13 @@ export function SampleOutputEvaluationForm({
   sampleOutputId,
   evaluation,
 }: ISampleOutputEvaluationFormProps) {
+  const { id: userId } = useUserData();
+
   const submitEvaluation = useCallback(
     (score?: number, comment?: string) => {
-      submitSampleOutputEvaluation(sampleOutputId, score, comment);
+      submitSampleOutputEvaluation(sampleOutputId, userId, score, comment);
     },
-    [sampleOutputId]
+    [sampleOutputId, userId]
   );
   const [comment, setComment] = React.useState<string>();
   const [open, setOpen] = React.useState(false);

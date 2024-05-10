@@ -1,26 +1,11 @@
 import { PrismaClient, Sample } from "@flashcast/db";
-import { auth } from "@flashcast/auth";
 import { AzureBlobSASService } from "./blob-service";
-
-const STORAGE_CONTAINER_NAME = "samples";
 
 export class SampleService {
   constructor(
     private prisma: PrismaClient,
     private azureBlobSASService: AzureBlobSASService
   ) {}
-
-  private async getUser() {
-    const session = await auth();
-    const user = await this.prisma.user.findFirst({
-      where: {
-        email: session?.user?.email || "",
-      },
-    });
-
-    if (!user) throw new Error("User not found");
-    return user;
-  }
 
   async generateSampleUrl(containerName: string, id: string) {
     return this.azureBlobSASService.getBlobSASToken(containerName, id);
@@ -30,16 +15,16 @@ export class SampleService {
     meetingTitle: string,
     recordingUrl: string,
     transcriptionUrl: string,
-    aiNotes: string
+    aiNotes: string,
+    userId: number
   ) {
-    const user = await this.getUser();
     const sample = await this.prisma.sample.create({
       data: {
         data: {
           aiNotes,
         },
         isPublic: true,
-        userId: user.id,
+        userId,
         recordingVideoUrl: recordingUrl,
         meetingTitle: meetingTitle,
         transcriptionFileUrl: transcriptionUrl,
@@ -49,34 +34,31 @@ export class SampleService {
     return sample;
   }
 
-  async getSamples(): Promise<Sample[]> {
-    const user = await this.getUser();
+  async getSamples(userId: number): Promise<Sample[]> {
     const samples = await this.prisma.sample.findMany({
       where: {
-        userId: user.id,
+        userId,
       },
     });
     return samples;
   }
 
-  async getSample(id: number) {
-    const user = await this.getUser();
+  async getSample(id: number, userId: number) {
     const sample = await this.prisma.sample.findUniqueOrThrow({
       where: {
         id,
-        userId: user.id,
+        userId,
       },
     });
     if (!sample) throw new Error("Sample not found");
     return sample;
   }
 
-  async deleteSample(id: number) {
-    const user = await this.getUser();
+  async deleteSample(id: number, userId: number) {
     await this.prisma.sample.delete({
       where: {
         id,
-        userId: user.id,
+        userId,
       },
     });
   }

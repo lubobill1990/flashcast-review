@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import { Session } from "./auth.interface";
+import { ISession } from "./auth.interface";
 import { getAccount, createAccount } from "./util";
 
 const getAppServiceClaims = (): {
@@ -16,6 +16,7 @@ const getAppServiceClaims = (): {
   principalIdp: string;
 } => {
   const reqHeaders = headers();
+  console.log(reqHeaders);
 
   const principalClaims = reqHeaders.get("X-MS-CLIENT-PRINCIPAL") || "";
   const principalId = reqHeaders.get("X-MS-CLIENT-PRINCIPAL-ID") || "";
@@ -32,7 +33,8 @@ const getAppServiceClaims = (): {
   };
 };
 
-export const auth = async (): Promise<Session> => {
+export const auth = async (): Promise<ISession> => {
+  console.log("auth");
   const { principalClaims, principalId, principalName, principalIdp } =
     getAppServiceClaims();
 

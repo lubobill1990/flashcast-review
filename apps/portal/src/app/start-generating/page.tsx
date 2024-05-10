@@ -16,6 +16,7 @@ import axios, { AxiosProgressEvent } from "axios";
 import { useState } from "react";
 import { ProgressBar } from "@fluentui/react-components";
 import NextLink from "next/link";
+import { useUserData } from "../user-data-provider";
 
 type STATUS = "fill-form" | "uploading" | "starting" | "started";
 
@@ -84,6 +85,8 @@ const ArtifactsForm = ({
     showTranscriptionUploadProgress,
   ] = useProgress();
 
+  const { id, uuid } = useUserData();
+
   const handleSubmit = async (formData: FormData) => {
     const recording = formData.get("recording") as File;
     const transcription = formData.get("transcription") as File;
@@ -94,9 +97,9 @@ const ArtifactsForm = ({
     const meetingTitle = splitTranscriptionFileName.join(".");
 
     const { blobUrl: recordingUrl, sasUrl: recordingSASUrl } =
-      await getUploadUrl(recording.name);
+      await getUploadUrl(recording.name, uuid);
     const { blobUrl: transcriptionUrl, sasUrl: transcriptionSASUrl } =
-      await getUploadUrl(transcription.name);
+      await getUploadUrl(transcription.name, uuid);
 
     setStatus("uploading");
     await Promise.allSettled([
@@ -111,7 +114,7 @@ const ArtifactsForm = ({
     setTranscriptionUploadProgress(1);
 
     setStatus("starting");
-    await submit(meetingTitle, recordingUrl, transcriptionUrl, notes);
+    await submit(meetingTitle, recordingUrl, transcriptionUrl, notes, id);
     setStatus("started");
   };
 

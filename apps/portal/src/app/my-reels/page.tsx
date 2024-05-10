@@ -1,11 +1,12 @@
 import Branding from "../branding";
 import factory from "@/factory";
 import { Divider, MainPageCard, ReelsCollection } from "portal-ui";
+import { useUserData } from "../user-data-provider";
 
 export default async function Page() {
-  const user = await factory.userService.getUser();
+  const { id: userId } = useUserData();
   const sampleOutputs =
-    await factory.sampleOutputService.getSampleOutputsByUserId(user.id);
+    await factory.sampleOutputService.getSampleOutputsByUserId(userId);
   sampleOutputs.forEach(sampleOutput => {
     sampleOutput.clips.forEach(clip => {
       clip.videoUrl = factory.azureBlobSASService.generateReadOnlySasUrl(
