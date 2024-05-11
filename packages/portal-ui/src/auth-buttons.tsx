@@ -5,11 +5,19 @@ import Image from "next/image";
 import Link from "next/link";
 
 export async function LoginButton() {
-  return <Link href="/.auth/login/aad">Log in</Link>;
+  return (
+    <Link href="/.auth/login/aad" prefetch={false}>
+      Log in
+    </Link>
+  );
 }
 
 export async function LogoutButton() {
-  return <Link href="/.auth/logout">Log out</Link>;
+  return (
+    <Link href="/.auth/logout" prefetch={false}>
+      Log out
+    </Link>
+  );
 }
 
 export async function AuthButton() {
