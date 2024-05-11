@@ -32,8 +32,6 @@ const getAppServiceClaims = (): {
   };
 };
 
-const whitelist = process.env.WHITELIST?.split(";") || [];
-
 export const auth = async (): Promise<Session> => {
   const { principalClaims, principalId, principalName, principalIdp } =
     getAppServiceClaims();
@@ -46,7 +44,7 @@ export const auth = async (): Promise<Session> => {
         "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"
     )?.val || principalName;
 
-  if (!account && whitelist.includes(userEmail)) {
+  if (!account) {
     const userName =
       principalClaims?.claims?.find(claim => claim.typ === "name")?.val ||
       principalName.split("@")[0] ||
