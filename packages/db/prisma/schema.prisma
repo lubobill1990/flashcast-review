@@ -144,6 +144,7 @@ model Clip {
   tags           String[]
   startTime      Int              @default(0)
   endTime        Int              @default(0)
+  scores         Json             @default("{}")
   payload        Json             @default("{}")
   createdAt      DateTime         @default(now())
   evaluations    ClipEvaluation[]

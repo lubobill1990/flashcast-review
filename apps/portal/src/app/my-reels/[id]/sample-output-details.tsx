@@ -25,7 +25,7 @@ export const SampleOutputDetails: FC<{
   return (
     <>
       <div className="flex">
-        {clipVideoUrl && (
+        {/* {clipVideoUrl && (
           <div className="w-[30%]">
             <video
               className="aspect-[9/16] rounded-lg"
@@ -33,7 +33,7 @@ export const SampleOutputDetails: FC<{
               src={clipVideoUrl}
             ></video>
           </div>
-        )}
+        )} */}
         <div className="flex-1 ml-3 bg-[#ffffffcc] rounded-lg shadow-lg">
           <div className="flex p-4">
             <div className="flex flex-col flex-1">

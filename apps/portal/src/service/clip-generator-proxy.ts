@@ -76,7 +76,7 @@ export class ClipGeneratorProxy {
     );
     const url = new URL(endpoint);
     url.searchParams.append("token", token);
-
+    console.log("getApiUrl:", url.toString());
     return url.toString();
   }
 
@@ -120,7 +120,7 @@ export class ClipGeneratorProxy {
       },
       useCache: true,
     };
-
+    console.log("clipGeneratorApiUrl:", clipGeneratorApiUrl);
     await axios.post(clipGeneratorApiUrl, data);
   }
 }

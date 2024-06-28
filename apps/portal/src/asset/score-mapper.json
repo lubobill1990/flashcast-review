@@ -1,0 +1,20 @@
+{
+  "score": "FinalNorm",
+  "dimensions": [
+    {
+      "type": "intensity",
+      "score": "IntensityNorm",
+      "reason": "IntensityReason"
+    },
+    {
+      "type": "insightful",
+      "score": "InsightfulNorm",
+      "reason": "InsightfulReason"
+    },
+    {
+      "type": "relevancy",
+      "score": "RelevancyNorm",
+      "reason": "RelevancyReason"
+    }
+  ]
+}

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSampleOutputOrThrow } from "../sample-output-api-util";
-import { prisma } from "@flashcast/db";
+import { prisma, type IClipScore } from "@flashcast/db";
 import { z } from "zod";
+import fs from "fs";
 
 const ClipRequest = z.object({
   headline: z.string().min(1),
@@ -12,7 +13,33 @@ const ClipRequest = z.object({
   endTime: z.number().min(0),
   storagePath: z.string().url().min(1),
   payload: z.string().optional(),
+  scores: z
+    .object({
+      FinalNorm: z.number(),
+      IntensityNorm: z.number().optional(),
+      IntensityReason: z.string().optional(),
+      InsightfulNorm: z.number().optional(),
+      InsightfulReason: z.string().optional(),
+      RelevancyNorm: z.number().optional(),
+      RelevancyReason: z.string().optional(),
+    })
+    .optional(),
 });
+
+const ClipScoreMapper = z.object({
+  score: z.string(),
+  dimensions: z
+    .object({
+      type: z.string(),
+      score: z.string(),
+      reason: z.string(),
+    })
+    .array(),
+});
+const clipScoreMapperJson = JSON.parse(
+  fs.readFileSync("@/asset/score-mapper.json", "utf8")
+);
+const clipScoreMapper = ClipScoreMapper.parse(clipScoreMapperJson);
 
 export async function POST(
   req: NextRequest,
@@ -34,6 +61,25 @@ export async function POST(
 
     const sampleOutput = await getSampleOutputOrThrow(id, token);
 
+    const rawScores = clipData.scores;
+    const scores: IClipScore | undefined = rawScores && {
+      score: rawScores[clipScoreMapper.score] as number,
+      dimensions: clipScoreMapper.dimensions
+        .map(dimension => {
+          const score = rawScores[dimension.score];
+          const reason = rawScores[dimension.reason];
+
+          if (score && reason) {
+            return {
+              type: dimension.type,
+              score: rawScores[dimension.score] as number,
+              reason: rawScores[dimension.reason] as string,
+            };
+          }
+        })
+        .filter(dimension => !!dimension) as IClipScore["dimensions"],
+    };
+
     await prisma.clip.create({
       data: {
         videoUrl: clipData.storagePath,
@@ -43,6 +89,7 @@ export async function POST(
         tags: clipData.tags,
         startTime: clipData.startTime,
         endTime: clipData.endTime,
+        scores: scores,
         payload: clipData.payload,
         data: {},
         sampleOutput: {
