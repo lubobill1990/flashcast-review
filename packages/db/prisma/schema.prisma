@@ -157,8 +157,9 @@ model ClipEvaluation {
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
-  score     Int
+  score     Int?
   comment   String?
+  data      Json?
 }
 
 model SampleOutputEvaluation {
@@ -168,6 +169,7 @@ model SampleOutputEvaluation {
   userId         Int
   user           User         @relation(fields: [userId], references: [id])
   createdAt      DateTime     @default(now())
-  score          Int
+  score          Int?
   comment        String?
+  data           Json?
 }

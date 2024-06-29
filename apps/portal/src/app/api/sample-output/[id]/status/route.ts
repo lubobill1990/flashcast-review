@@ -17,6 +17,7 @@ export async function POST(
 ) {
   const token = req.nextUrl.searchParams.get("token");
   const { status } = await req.json();
+  console.log("[DEBUG] POST /api/sample-output/[id]/status", status);
 
   if (!token) {
     return NextResponse.error();

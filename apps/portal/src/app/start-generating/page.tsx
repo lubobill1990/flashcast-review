@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  submit,
-  getUploadUrl,
-  getAllExperiments,
-  startExperiment,
-} from "./actions";
+import { submit, getUploadUrl } from "./actions";
 import Branding from "../branding";
 import {
   MainPageCard,
@@ -56,11 +51,6 @@ function useProgress() {
 
 export default function Page() {
   const [status, setStatus] = useState<STATUS>("fill-form");
-  const [experiments, setExperiments] = useState<number[]>([]);
-
-  getAllExperiments().then(experiments =>
-    setExperiments(experiments.map(experiment => experiment.id))
-  );
 
   return (
     <>
@@ -72,16 +62,6 @@ export default function Page() {
           <ArtifactsForm status={status} setStatus={setStatus} />
         )}
       </MainPageCard>
-      <ul>
-        {experiments.map(experimentId => (
-          <li key={experimentId}>
-            {experimentId}{" "}
-            <button onClick={() => startExperiment(experimentId)}>
-              Start Experiment
-            </button>
-          </li>
-        ))}
-      </ul>
     </>
   );
 }

@@ -36,7 +36,9 @@ export default async function RootLayout({
         {session?.user ? (
           <Providers>
             <NavBar></NavBar>
-            <div className="container mx-auto py-16 px-2">{children}</div>
+            <div className="container mx-auto py-16 px-2 font-sans">
+              {children}
+            </div>
             <footer className="hidden">
               <p className="flex-1">© {new Date().getFullYear()} FlashCast</p>
             </footer>

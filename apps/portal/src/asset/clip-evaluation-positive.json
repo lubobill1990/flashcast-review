@@ -1,0 +1,41 @@
+{
+  "type": "clip_evaluation_positive",
+  "questions": [
+    {
+      "id": 1,
+      "type": "multiple_choice",
+      "question": "What did you like? (Select all that apply)",
+      "required": true,
+      "options": [
+        {
+          "id": 1,
+          "text": "The overall score (ranking) of this reel is appropriate."
+        },
+        {
+          "id": 2,
+          "text": "The reel's title and description accurately reflect the content."
+        },
+        {
+          "id": 3,
+          "text": "The extracted content is valuable and helpful."
+        },
+        {
+          "id": 4,
+          "text": "The reel's presentation is enjoyable."
+        },
+        {
+          "id": 5,
+          "text": "Other reasons",
+          "isOpen": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "open_answer",
+      "question": "Any other feedback to help us improve?",
+      "required": false,
+      "hint": "Summarize your feedback"
+    }
+  ]
+}

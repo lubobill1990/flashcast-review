@@ -37,7 +37,7 @@ const ClipScoreMapper = z.object({
     .array(),
 });
 const clipScoreMapperJson = JSON.parse(
-  fs.readFileSync("@/asset/score-mapper.json", "utf8")
+  fs.readFileSync(process.cwd() + "/src/asset/score-mapper.json", "utf8")
 );
 const clipScoreMapper = ClipScoreMapper.parse(clipScoreMapperJson);
 
@@ -46,6 +46,8 @@ export async function POST(
   { params: { id } }: { params: { id: string } }
 ) {
   const token = req.nextUrl.searchParams.get("token");
+  console.log("[DEBUG] POST /api/sample-output/[id]/clip");
+  console.log("request", req);
 
   if (!token) {
     return NextResponse.error();
@@ -54,10 +56,7 @@ export async function POST(
   try {
     const reqData = await req.json();
     const clipData = ClipRequest.parse(reqData);
-
-    console.log({
-      clipData,
-    });
+    console.log("clipData", clipData);
 
     const sampleOutput = await getSampleOutputOrThrow(id, token);
 

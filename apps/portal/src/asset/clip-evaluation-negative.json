@@ -1,0 +1,45 @@
+{
+  "type": "clip_evaluation_negative",
+  "questions": [
+    {
+      "id": 1,
+      "type": "multiple_choice",
+      "question": "What went wrong? (Select all that apply)",
+      "required": true,
+      "options": [
+        {
+          "id": 1,
+          "text": "The overall score (ranking) of this reel could be higher."
+        },
+        {
+          "id": 2,
+          "text": "The overall score (ranking) of this reel could be lower."
+        },
+        {
+          "id": 3,
+          "text": "The reel's title or description is inaccurate."
+        },
+        {
+          "id": 4,
+          "text": "The extracted content lacks engagement or insight."
+        },
+        {
+          "id": 5,
+          "text": "The visualization (e.g., background style, layout) is unappealing."
+        },
+        {
+          "id": 6,
+          "text": "Other reasons",
+          "isOpen": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "open_answer",
+      "question": "Any other feedback to help us improve?",
+      "required": false,
+      "hint": "Summarize your feedback"
+    }
+  ]
+}
