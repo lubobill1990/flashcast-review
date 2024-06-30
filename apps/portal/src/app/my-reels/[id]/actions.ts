@@ -60,8 +60,8 @@ export async function submitSampleOutputEvaluation(
 
 export async function submitClipEvaluation(
   clipId: number,
-  score?: number,
-  comment?: string
+  type: "positive" | "negative",
+  formdata?: any
 ) {
   const userId = await getUserId();
   if (!userId) {
@@ -70,8 +70,8 @@ export async function submitClipEvaluation(
   return factory.evaluationService.submitClipEvaluation(
     clipId,
     userId,
-    score,
-    comment
+    type,
+    formdata
   );
 }
 

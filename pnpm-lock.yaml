@@ -73,6 +73,12 @@ importers:
       sharp:
         specifier: ^0.33.2
         version: 0.33.4
+      survey-core:
+        specifier: ^1.11.4
+        version: 1.11.4
+      survey-react-ui:
+        specifier: ^1.11.4
+        version: 1.11.4(react-dom@18.3.1)(react@18.3.1)(survey-core@1.11.4)
       universal-cookie:
         specifier: ^7.1.0
         version: 7.1.4
@@ -10104,6 +10110,22 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
     dev: true
+
+  /survey-core@1.11.4:
+    resolution: {integrity: sha512-8hQMzpbarozXAflTsJYdVGd2aJcGmC8DKZzwg6z8Lzd2qX8NZwYcNcYoY2w6UmRYgbIiH+sIegz4YoB7w8XDfg==}
+    dev: false
+
+  /survey-react-ui@1.11.4(react-dom@18.3.1)(react@18.3.1)(survey-core@1.11.4):
+    resolution: {integrity: sha512-VzwIbC8DJ6DYVcUYiFOU+8ic4NVmOuS8V71Rh8NHzqglttaJ8Yy9BKU0kAdFbBpJjAEU3CO4xsq1bDxpZgQ0pw==}
+    peerDependencies:
+      react: ^16.5.0 || ^17.0.1 || ^18.2.0
+      react-dom: ^16.5.0 || ^17.0.1 || ^18.2.0
+      survey-core: 1.11.4
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      survey-core: 1.11.4
+    dev: false
 
   /svg-parser@2.0.4:
     resolution: {integrity: sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ==}

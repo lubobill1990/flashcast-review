@@ -76,7 +76,7 @@ export const SampleOutputDetails: FC<{
                   Mock Video Element
                 </div>
               </div>
-              <div className="flex flex-col ml-[19px]">
+              <div className="flex flex-col ml-[19px] w-full">
                 <h2 className="flex items-center">
                   <span className="text-[22px] font-[600] text-[#242424] leading-[32px] mr-[8px]">
                     #{i + 1} {clip.headline}{" "}

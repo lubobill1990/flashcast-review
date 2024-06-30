@@ -6,8 +6,8 @@ export class EvaluationService {
   async submitClipEvaluation(
     clipId: number,
     userId: number,
-    score?: number,
-    comment?: string
+    type: "positive" | "negative",
+    formdata?: any
   ) {
     // query existing clip evaluation
     const existingEvaluation = await this.prisma.clipEvaluation.findFirst({
@@ -24,8 +24,10 @@ export class EvaluationService {
           id: existingEvaluation.id,
         },
         data: {
-          score: score ?? existingEvaluation.score,
-          comment: comment ?? existingEvaluation.comment,
+          data: {
+            type,
+            formdata,
+          },
         },
       });
     }
@@ -34,8 +36,10 @@ export class EvaluationService {
       data: {
         clipId,
         userId,
-        score: score ?? -1,
-        comment,
+        data: {
+          type,
+          formdata,
+        },
       },
     });
   }

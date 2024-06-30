@@ -1,0 +1,28 @@
+{
+  "title": "Provide feedback to this reel",
+  "pages": [
+    {
+      "name": "page1",
+      "elements": [
+        {
+          "type": "checkbox",
+          "name": "What did you like? (Select all that apply)",
+          "isRequired": true,
+          "choices": [
+            "The overall score (ranking) of this reel is appropriate.",
+            "The reel's title and description accurately reflect the content.",
+            "The extracted content is valuable and helpful.",
+            "The reel's presentation is enjoyable."
+          ],
+          "showOtherItem": true,
+          "otherText": "Other reasons"
+        },
+        {
+          "type": "comment",
+          "name": "Any other feedback to help us improve?",
+          "placeholder": "Summarize your feedback"
+        }
+      ]
+    }
+  ]
+}
