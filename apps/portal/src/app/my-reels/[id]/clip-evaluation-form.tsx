@@ -60,11 +60,10 @@ export const ClipEvaluationForm: React.FC<{
     });
   };
 
-  const handleSubmitForm = (type: "positive" | "negative", formdata: any) => {
+  const handleSubmitForm = (type: "positive" | "negative", formdata: any) =>
     submitClipEvaluation(clipId, type, formdata).then(() => {
       setFeedbackFormProvided(true);
     });
-  };
 
   const tip = feedbackProvided ? (
     <>
@@ -139,7 +138,7 @@ export const ClipEvaluationForm: React.FC<{
 interface IFeedbackFormProps {
   open: boolean;
   setOpen: (newOpen: boolean) => void;
-  onSubmit: (type: "positive" | "negative", formdata: any) => void;
+  onSubmit: (type: "positive" | "negative", formdata: any) => Promise<void>;
 }
 
 const positiveFormJson = {
@@ -179,7 +178,10 @@ export const ClipEvaluationPositiveForm: React.FC<IFeedbackFormProps> = ({
   survey.onComplete.add((sender, options) => {
     options.showSaveInProgress();
     console.log(sender.data);
-    onSubmit("positive", sender.data);
+    onSubmit("positive", sender.data).then(() => {
+      options.showSaveSuccess();
+      setOpen(false);
+    });
   });
 
   return (
@@ -251,7 +253,10 @@ export const ClipEvaluationNegativeForm: React.FC<IFeedbackFormProps> = ({
   survey.onComplete.add((sender, options) => {
     options.showSaveInProgress();
     console.log(sender.data);
-    onSubmit("negative", sender.data);
+    onSubmit("negative", sender.data).then(() => {
+      options.showSaveSuccess();
+      setOpen(false);
+    });
   });
 
   return (
