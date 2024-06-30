@@ -29,7 +29,7 @@ export class SampleService {
   async createSample(
     meetingTitle: string,
     recordingUrl: string,
-    transcriptionUrl: string,
+    transcriptUrl: string,
     aiNotes: string
   ) {
     const user = await this.getUser();
@@ -42,7 +42,7 @@ export class SampleService {
         userId: user.id,
         recordingVideoUrl: recordingUrl,
         meetingTitle: meetingTitle,
-        transcriptionFileUrl: transcriptionUrl,
+        transcriptionFileUrl: transcriptUrl,
       },
     });
 

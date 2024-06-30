@@ -37,6 +37,30 @@ export async function getUserSampleOutputById(sampleOutputId: number) {
     clip.videoUrl = factory.azureBlobSASService.generateReadOnlySasUrl(
       clip.videoUrl
     );
+    // TODO: remove following when API is ready to return scores
+    clip.scores = {
+      score: 87,
+      dimensions: [
+        {
+          type: "intensity",
+          score: 70,
+          reason:
+            "The participants actively discuss the issues and potential solutions, emphasizing the need to prioritize improvements and not let perfectionism hinder progress.",
+        },
+        {
+          type: "insightful",
+          score: 80,
+          reason:
+            "The discussion addresses specific challenges and proposes solutions for improving transcript quality and name recall in intelligent meetings.",
+        },
+        {
+          type: "relevancy",
+          score: 90,
+          reason:
+            "The topic directly relates to the AI notes, which mentioned the challenges and opportunities in the intelligent meetings area, including transcript quality.",
+        },
+      ],
+    };
   });
   return sampleOutput;
 }
@@ -60,8 +84,8 @@ export async function submitSampleOutputEvaluation(
 
 export async function submitClipEvaluation(
   clipId: number,
-  score?: number,
-  comment?: string
+  type: "positive" | "negative",
+  formdata?: any
 ) {
   const userId = await getUserId();
   if (!userId) {
@@ -70,8 +94,8 @@ export async function submitClipEvaluation(
   return factory.evaluationService.submitClipEvaluation(
     clipId,
     userId,
-    score,
-    comment
+    type,
+    formdata
   );
 }
 

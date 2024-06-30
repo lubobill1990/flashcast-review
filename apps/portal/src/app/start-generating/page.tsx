@@ -79,39 +79,42 @@ const ArtifactsForm = ({
     showRecordingUploadProgress,
   ] = useProgress();
   const [
-    transcriptionUploadProgress,
-    setTranscriptionUploadProgress,
-    showTranscriptionUploadProgress,
+    transcriptUploadProgress,
+    setTranscriptUploadProgress,
+    showTranscriptUploadProgress,
   ] = useProgress();
 
   const handleSubmit = async (formData: FormData) => {
     const recording = formData.get("recording") as File;
-    const transcription = formData.get("transcription") as File;
+    const transcript = formData.get("transcript") as File;
     const notes = formData.get("notes") as string;
 
-    const splitTranscriptionFileName = transcription.name.split(".");
-    splitTranscriptionFileName.pop();
-    const meetingTitle = splitTranscriptionFileName.join(".");
+    const splitTranscriptFileName = transcript.name.split(".");
+    splitTranscriptFileName.pop();
+    const meetingTitle = splitTranscriptFileName.join(".");
 
     const { blobUrl: recordingUrl, sasUrl: recordingSASUrl } =
       await getUploadUrl(recording.name);
-    const { blobUrl: transcriptionUrl, sasUrl: transcriptionSASUrl } =
-      await getUploadUrl(transcription.name);
+    const { blobUrl: transcriptUrl, sasUrl: transcriptSASUrl } =
+      await getUploadUrl(transcript.name);
+
+    console.log("recordingSASUrl:", recordingSASUrl);
+    console.log("transcriptSASUrl:", transcriptSASUrl);
 
     setStatus("uploading");
     await Promise.allSettled([
       upload(recordingSASUrl, recording, ({ loaded, total }) => {
         setRecordingUploadProgress(loaded / total);
       }),
-      upload(transcriptionSASUrl, transcription, ({ loaded, total }) => {
-        setTranscriptionUploadProgress(loaded / total);
+      upload(transcriptSASUrl, transcript, ({ loaded, total }) => {
+        setTranscriptUploadProgress(loaded / total);
       }),
     ]);
     setRecordingUploadProgress(1);
-    setTranscriptionUploadProgress(1);
+    setTranscriptUploadProgress(1);
 
     setStatus("starting");
-    await submit(meetingTitle, recordingUrl, transcriptionUrl, notes);
+    await submit(meetingTitle, recordingUrl, transcriptUrl, notes);
     setStatus("started");
   };
 
@@ -130,7 +133,12 @@ const ArtifactsForm = ({
         }
         hint={`Upload the recording file from your device. Supporting file type: .mp4 and .mov files.`}
       >
-        <input id="recording-input" type="file" name="recording" />
+        <input
+          id="recording-input"
+          type="file"
+          name="recording"
+          accept=".mp4,.mov"
+        />
         {showRecordingUploadProgress && (
           <ProgressBar className="mt-1" value={recordingUploadProgress} />
         )}
@@ -138,19 +146,23 @@ const ArtifactsForm = ({
       <Field
         required
         label={
-          <Label weight="semibold" htmlFor="transcription-input">
-            Transcription
+          <Label weight="semibold" htmlFor="transcript-input">
+            Transcript
           </Label>
         }
         hint={`Go to Meeting Recap and click on “Download” under Transcript. Supporting file type: .docx file.`}
       >
-        <input id="transcription-input" type="file" name="transcription" />
-        {showTranscriptionUploadProgress && (
-          <ProgressBar className="mt-1" value={transcriptionUploadProgress} />
+        <input
+          id="transcript-input"
+          type="file"
+          name="transcript"
+          accept=".docx"
+        />
+        {showTranscriptUploadProgress && (
+          <ProgressBar className="mt-1" value={transcriptUploadProgress} />
         )}
       </Field>
       <Field
-        required
         label={<Label weight="semibold">AI notes</Label>}
         hint="Go to Meeting Recap and click on “Copy all” under AI notes. Paste in the full AI notes below."
       >

@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import { SampleOutputEvaluation } from "@flashcast/db";
-import { Rating } from "@fluentui/react-rating-preview";
 
 import {
   Button,
@@ -13,11 +12,6 @@ import {
   DialogTrigger,
   Label,
   Textarea,
-  Toaster,
-  useId,
-  useToastController,
-  Toast,
-  ToastTitle,
 } from "@fluentui/react-components";
 import { submitSampleOutputEvaluation } from "./actions";
 
@@ -30,36 +24,29 @@ export function SampleOutputEvaluationForm({
   sampleOutputId,
   evaluation,
 }: ISampleOutputEvaluationFormProps) {
+  const [comment, setComment] = React.useState<string>();
+  const [open, setOpen] = React.useState(false);
+  const [feedbackProvide, setFeedbackProvide] = React.useState(!!evaluation);
+
   const submitEvaluation = useCallback(
     (score?: number, comment?: string) => {
-      submitSampleOutputEvaluation(sampleOutputId, score, comment);
+      submitSampleOutputEvaluation(sampleOutputId, score, comment).then(() => {
+        setFeedbackProvide(true);
+      });
     },
     [sampleOutputId]
   );
-  const [comment, setComment] = React.useState<string>();
-  const [open, setOpen] = React.useState(false);
-  const toasterId = useId("toaster");
-  const { dispatchToast } = useToastController(toasterId);
-  const notify = () =>
-    dispatchToast(
-      <Toast>
-        <ToastTitle>Thanks for providing feedback!</ToastTitle>
-      </Toast>,
-      { intent: "success" }
+
+  if (feedbackProvide) {
+    return (
+      <div className="font-[600] text-[16px] leading-[22px]">
+        Thank you for your feedback!
+      </div>
     );
+  }
   return (
     <div className="flex flex-col gap-2 items-end">
-      <Rating
-        defaultValue={evaluation?.score}
-        name="score"
-        size="large"
-        onChange={(_e, data) => {
-          submitEvaluation(data.value);
-        }}
-      ></Rating>
-      <Toaster toasterId={toasterId} position="top-end" />
-
-      <Dialog open={open} onOpenChange={(event, data) => setOpen(data.open)}>
+      <Dialog open={open} onOpenChange={(_, data) => setOpen(data.open)}>
         <DialogTrigger disableButtonEnhancement>
           <Button className="">Give feedback</Button>
         </DialogTrigger>
@@ -91,7 +78,6 @@ export function SampleOutputEvaluationForm({
                 disabled={!comment}
                 onClick={async () => {
                   await submitEvaluation(undefined, comment);
-                  notify();
                   setOpen(false);
                 }}
               >

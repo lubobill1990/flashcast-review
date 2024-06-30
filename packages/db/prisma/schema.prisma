@@ -144,6 +144,7 @@ model Clip {
   tags           String[]
   startTime      Int              @default(0)
   endTime        Int              @default(0)
+  scores         Json             @default("{}")
   payload        Json             @default("{}")
   createdAt      DateTime         @default(now())
   evaluations    ClipEvaluation[]
@@ -156,8 +157,9 @@ model ClipEvaluation {
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
-  score     Int
+  score     Int?
   comment   String?
+  data      Json?
 }
 
 model SampleOutputEvaluation {
@@ -167,6 +169,7 @@ model SampleOutputEvaluation {
   userId         Int
   user           User         @relation(fields: [userId], references: [id])
   createdAt      DateTime     @default(now())
-  score          Int
+  score          Int?
   comment        String?
+  data           Json?
 }

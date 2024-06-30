@@ -61,4 +61,12 @@ export class ExperimentService {
       },
     });
   }
+
+  async getAllExperiments(userId: number) {
+    return await this.prisma.experiment.findMany({
+      where: {
+        userId,
+      },
+    });
+  }
 }

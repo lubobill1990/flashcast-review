@@ -24,7 +24,7 @@ export async function getUploadUrl(fileName: string) {
 export async function submit(
   meetingTitle: string,
   recordingUrl: string,
-  transcriptionUrl: string,
+  transcriptUrl: string,
   aiNotes: string
 ) {
   const user = await factory.userService.getUser();
@@ -32,7 +32,7 @@ export async function submit(
   const sample = await factory.sampleService.createSample(
     meetingTitle,
     recordingUrl,
-    transcriptionUrl,
+    transcriptUrl,
     aiNotes
   );
 
@@ -53,4 +53,14 @@ export async function submit(
 export async function getUserInfo() {
   const session = await auth();
   console.log("getUserInfo", { session }, Date.now());
+}
+
+export async function getAllExperiments() {
+  const user = await factory.userService.getUser();
+  return await factory.experimentService.getAllExperiments(user.id);
+}
+
+export async function startExperiment(experimentId: number) {
+  const clipGenerator = new ClipGeneratorProxy(prisma);
+  await clipGenerator.startExperiment(experimentId);
 }
