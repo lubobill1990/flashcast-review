@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSampleOutputOrThrow } from "../sample-output-api-util";
 import { prisma, type IClipScore } from "@flashcast/db";
 import { z } from "zod";
-import fs from "fs";
+// import fs from "fs";
 
 const ClipRequest = z.object({
   headline: z.string().min(1),
@@ -26,20 +26,42 @@ const ClipRequest = z.object({
     .optional(),
 });
 
-const ClipScoreMapper = z.object({
-  score: z.string(),
-  dimensions: z
-    .object({
-      type: z.string(),
-      score: z.string(),
-      reason: z.string(),
-    })
-    .array(),
-});
-const clipScoreMapperJson = JSON.parse(
-  fs.readFileSync(process.cwd() + "/src/asset/score-mapper.json", "utf8")
-);
-const clipScoreMapper = ClipScoreMapper.parse(clipScoreMapperJson);
+// TODO: uncomment this when the score-mapper.json is ready for production
+// const ClipScoreMapper = z.object({
+//   score: z.string(),
+//   dimensions: z
+//     .object({
+//       type: z.string(),
+//       score: z.string(),
+//       reason: z.string(),
+//     })
+//     .array(),
+// });
+// const clipScoreMapperJson = JSON.parse(
+//   fs.readFileSync(process.cwd() + "/src/asset/score-mapper.json", "utf8")
+// );
+// const clipScoreMapper = ClipScoreMapper.parse(clipScoreMapperJson);
+
+const clipScoreMapper = {
+  score: "FinalNorm",
+  dimensions: [
+    {
+      type: "intensity",
+      score: "IntensityNorm",
+      reason: "IntensityReason",
+    },
+    {
+      type: "insightful",
+      score: "InsightfulNorm",
+      reason: "InsightfulReason",
+    },
+    {
+      type: "relevancy",
+      score: "RelevancyNorm",
+      reason: "RelevancyReason",
+    },
+  ],
+};
 
 export async function POST(
   req: NextRequest,

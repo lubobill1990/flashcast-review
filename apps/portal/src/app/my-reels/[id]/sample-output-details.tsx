@@ -16,30 +16,20 @@ import { Button } from "@fluentui/react-components";
 import { SampleOutput } from "./actions";
 import { ClipEvaluationForm } from "./clip-evaluation-form";
 import { SampleOutputEvaluationForm } from "./sample-output-evaluation-form";
+import { z } from "zod";
 
-const mockScores = {
-  score: "87",
-  dimensions: [
-    {
-      type: "intensity",
-      score: 70,
-      reason:
-        "The participants actively discuss the issues and potential solutions, emphasizing the need to prioritize improvements and not let perfectionism hinder progress.",
-    },
-    {
-      type: "insightful",
-      score: 80,
-      reason:
-        "The discussion addresses specific challenges and proposes solutions for improving transcript quality and name recall in intelligent meetings.",
-    },
-    {
-      type: "relevancy",
-      score: 90,
-      reason:
-        "The topic directly relates to the AI notes, which mentioned the challenges and opportunities in the intelligent meetings area, including transcript quality.",
-    },
-  ],
-};
+const ClipScore = z.object({
+  score: z.number().optional(),
+  dimensions: z
+    .array(
+      z.object({
+        type: z.string(),
+        score: z.number(),
+        reason: z.string(),
+      })
+    )
+    .optional(),
+});
 
 const ScoreDimensionI18n = {
   intensity: "Intensity",
@@ -60,64 +50,70 @@ export const SampleOutputDetails: FC<{
         <SampleInformation sampleOutput={sampleOutput} />
       </div>
       <ul>
-        {sampleOutput.clips.map((clip, i) => (
-          <li
-            key={clip.id}
-            className="flex-1 mt-[20px] bg-[#ffffffcc] rounded-lg"
-          >
-            <div className="flex px-[20px] py-[24px]">
-              <div className="w-[296px] shrink-0">
-                {/* <video
+        {sampleOutput.clips.map((clip, i) => {
+          const clipScores = ClipScore.parse(clip.scores);
+          return (
+            <li
+              key={clip.id}
+              className="flex-1 mt-[20px] bg-[#ffffffcc] rounded-lg"
+            >
+              <div className="flex px-[20px] py-[24px]">
+                <div className="w-[296px] shrink-0">
+                  <video
                     className="w-[296px] aspect-[9/16] rounded-md"
                     src={clip.videoUrl}
                     controls
-                  ></video> */}
-                <div className="flex w-[296px] aspect-[9/16] rounded-md bg-black text-white place-content-around">
+                  ></video>
+                  {/* <div className="flex w-[296px] aspect-[9/16] rounded-md bg-black text-white place-content-around">
                   Mock Video Element
+                </div> */}
+                </div>
+                <div className="flex flex-col ml-[19px] w-full">
+                  <h2 className="flex items-center">
+                    <span className="text-[22px] font-[600] text-[#242424] leading-[32px] mr-[8px]">
+                      #{i + 1} {clip.headline}{" "}
+                    </span>
+                    <Tag style={{ backgroundColor: "#1F1F1F1A" }}>
+                      <span className="font-[700]">
+                        {clipScores?.score ?? "-"}
+                      </span>
+                      /100
+                    </Tag>
+                  </h2>
+                  <p className="text-[18px] font-[400] text-[#212121] ml-[8px] mt-[8px] leading-6">
+                    {clip.description}
+                  </p>
+                  <div className="flex flex-col bg-[#E0E3FF33] mt-[16px] p-[16px] rounded-[8px]">
+                    <div className="text-[16px] font-[700] text-[#212121]">
+                      Overall Score: {clipScores?.score ?? "-"}
+                    </div>
+                    <Divider className="my-[12px]" />
+                    <div className="flex flex-col space-y-[11px]">
+                      {clipScores?.dimensions?.map((dimension, i) => (
+                        <div key={i}>
+                          <div className="text-[16px] font-[700] text-[#212121]">
+                            {convertDimension(dimension.type)}:{" "}
+                            {convertScore(dimension.score)}
+                          </div>
+                          <div className="text-[14px] font-[400] text-[#212121] leading-[21px]">
+                            {dimension.reason}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="grow" />
+                  <div>
+                    <ClipEvaluationForm
+                      clipId={clip.id}
+                      evaluation={clip.evaluations[0]}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col ml-[19px] w-full">
-                <h2 className="flex items-center">
-                  <span className="text-[22px] font-[600] text-[#242424] leading-[32px] mr-[8px]">
-                    #{i + 1} {clip.headline}{" "}
-                  </span>
-                  <Tag style={{ backgroundColor: "#1F1F1F1A" }}>
-                    <span className="font-[700]">{mockScores.score}</span>/100
-                  </Tag>
-                </h2>
-                <p className="text-[18px] font-[400] text-[#212121] ml-[8px] mt-[8px] leading-6">
-                  {clip.description}
-                </p>
-                <div className="flex flex-col bg-[#E0E3FF33] mt-[16px] p-[16px] rounded-[8px]">
-                  <div className="text-[16px] font-[700] text-[#212121]">
-                    Overall Score: {mockScores.score}
-                  </div>
-                  <Divider className="my-[12px]" />
-                  <div className="flex flex-col space-y-[11px]">
-                    {mockScores.dimensions.map((dimension, i) => (
-                      <div key={i}>
-                        <div className="text-[16px] font-[700] text-[#212121]">
-                          {convertDimension(dimension.type)}:{" "}
-                          {convertScore(dimension.score)}
-                        </div>
-                        <div className="text-[14px] font-[400] text-[#212121] leading-[21px]">
-                          {dimension.reason}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="grow" />
-                <div>
-                  <ClipEvaluationForm
-                    clipId={clip.id}
-                    evaluation={clip.evaluations[0]}
-                  />
-                </div>
-              </div>
-            </div>
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
